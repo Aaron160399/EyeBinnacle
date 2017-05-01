@@ -6,6 +6,8 @@
 package Ventana;
 
 
+import JDBC.MarcaJDBC;
+import JDBC.ProveedorJDBC;
 import POJO.MarcaPOJO;
 import POJO.ProductoPOJO;
 import POJO.ProveedorPOJO;
@@ -245,7 +247,7 @@ instruccion=null;
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        String marca=jComboBox1.getItemAt(WIDTH);
+        String marca=jComboBox1.getItemAt(jComboBox1.getSelectedIndex());
         String numeroIdentificacion=jTextField2.getText();
         String proveedor=jComboBox2.getItemAt(WIDTH);
         String goku1=jTextField4.getText();
@@ -253,19 +255,20 @@ instruccion=null;
         String caracteristica=jTextArea1.getText();
         ProductoPOJO productoPojo=new ProductoPOJO();
         MarcaPOJO marcaPOJO = new MarcaPOJO();
+        MarcaJDBC marcaJDBC = new MarcaJDBC();
+        int idMarca = marcaJDBC.obtenerID(marca);
         ProveedorPOJO proveedorPOJO = new ProveedorPOJO();
-        productoPojo.setMarca_idMarca(marca);
+        productoPojo.setMarca_idMarca(idMarca);
         productoPojo.setNumeroIdentificacion(numeroIdentificacion);
         proveedorPOJO.setNombre(proveedor);
         productoPojo.setPrecioventa(precio);
-         proveedorJDBC = new ProveedorJDBC();
+        ProveedorJDBC proveedorJDBC = new ProveedorJDBC();
         int x = ProveedorJDBC.insertar(proveedorPOJO);
 
         if (x != 0) {
             JOptionPane.showMessageDialog(null, "Guardado");
-            jTextField1.setText("");
+            jTextArea1.setText("");
             jTextField2.setText("");
-            jTextField3.setText("");
             jTextField4.setText("");
         } else {
             JOptionPane.showMessageDialog(null, "CATASTROPHIC ERROR");
