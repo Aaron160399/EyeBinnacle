@@ -26,7 +26,7 @@ public class MarcaJDBC {
    
     private static final String TABLE="Marca";
     private static final String SQL_INSERT="INSERT INTO "+TABLE+" (nombre) VALUES (?)";
-    private static final String SQL_QUERY="SELECT * FROM "+TABLE;
+    private static final String SQL_QUERY="SELECT * FROM "+TABLE+ " WHERE idMarca = ?";
     private static final String SQL_QUERY_ALL = "Select * from " + TABLE;
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idMarca=?";
     private static final String SQL_UPDATE="UPDATE "+TABLE+" SET nombre=? WHERE idMarca=?";
@@ -150,6 +150,27 @@ public class MarcaJDBC {
             Conexion.close(st);
         }
         return id;
+    }
+    
+    public static MarcaPOJO consultar(String id) {
+        Connection con = null;
+        PreparedStatement st = null;
+        MarcaPOJO pojo = new MarcaPOJO();
+        try {
+            con = Conexion.getConnection();
+            st = con.prepareStatement(SQL_QUERY);
+            st.setString(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                pojo = inflaPOJO(rs);
+            }
+        } catch (Exception e) {
+            System.out.println("Error al consultar  " + e);
+        } finally {
+            Conexion.close(con);
+            Conexion.close(st);
+        }
+        return pojo;
     }
     
     private static MarcaPOJO inflaPOJO(ResultSet rs) {

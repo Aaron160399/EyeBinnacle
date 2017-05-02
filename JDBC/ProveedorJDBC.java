@@ -21,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
 public class ProveedorJDBC {
     private static final String TABLE="Proveedor";
     private static final String SQL_INSERT="INSERT INTO "+TABLE+" (nombre, apellidos, empresa, telefono) VALUES (?,?,?,?)";
-    private static final String SQL_QUERY="SELECT * FROM "+TABLE;
+    private static final String SQL_QUERY="SELECT * FROM "+TABLE+" WHERE idProveedores = ?";
     private static final String SQL_QUERY_ALL = "Select * from " + TABLE;
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idproveedores=?";
     private static final String SQL_UPDATE="UPDATE "+TABLE+" SET nombre=?, apellidos=?, empresa=?, telefono=? WHERE idProveedores=?";
@@ -125,6 +125,27 @@ public class ProveedorJDBC {
             Conexion.close(st);
         }
         return dt;
+    }
+    
+    public static ProveedorPOJO consultar(String id) {
+        Connection con = null;
+        PreparedStatement st = null;
+        ProveedorPOJO pojo = new ProveedorPOJO();
+        try {
+            con = Conexion.getConnection();
+            st = con.prepareStatement(SQL_QUERY);
+            st.setString(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                pojo = inflaPOJO(rs);
+            }
+        } catch (Exception e) {
+            System.out.println("Error al consultar  " + e);
+        } finally {
+            Conexion.close(con);
+            Conexion.close(st);
+        }
+        return pojo;
     }
     
     private static ProveedorPOJO inflaPOJO(ResultSet rs) {

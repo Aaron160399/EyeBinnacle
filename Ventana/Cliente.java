@@ -50,6 +50,34 @@ public class Cliente extends javax.swing.JFrame {
         menuDoctora = menuDoctora2;
         cargarTabla();
     }
+    
+    public void funcionTabla(){
+        int seleccion = jTable1.getSelectedRow();
+        String id = jTable1.getValueAt(seleccion, 0).toString();
+        ClientePOJO clientePOJO = new ClientePOJO();
+        clientePOJO = ClienteJDBC.consultar(id);
+        
+        jTextField1.setText(clientePOJO.getNombre());
+        jTextField2.setText(clientePOJO.getApellidos());
+        jTextField3.setText(clientePOJO.getTelefono());
+        jTextField4.setText(clientePOJO.getCelular());
+        
+        jTextField5.setText(clientePOJO.getUltimavisita()+"");
+        if (jTextField5.getText().equals("null")) {
+            jTextField5.setText("");
+        }
+        
+        jTextField6.setText(clientePOJO.getProximavisita()+"");
+        if (jTextField6.getText().equals("null")) {
+            jTextField6.setText("");
+        }
+        
+        if (clientePOJO.getTipoCliente().equalsIgnoreCase("primera visita")) {
+            jRadioButton1.setSelected(true);
+        } else if (clientePOJO.getTipoCliente().equalsIgnoreCase("recurrente")) {
+            jRadioButton2.setSelected(true);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -248,20 +276,7 @@ String nombre=jTextField1.getText();
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
-          int seleccion=jTable1.rowAtPoint(evt.getPoint());
-        jTextField1.setText(String.valueOf(jTable1.getValueAt(seleccion, 1)));
-        jTextField2.setText(String.valueOf(jTable1.getValueAt(seleccion, 2)));
-        jTextField3.setText(String.valueOf(jTable1.getValueAt(seleccion, 3)));
-        jTextField4.setText(String.valueOf(jTable1.getValueAt(seleccion, 4)));
-        String prueba=(String) jTable1.getValueAt(seleccion, 5);
-       if (prueba.equals("primera visita")) {
-jRadioButton1.setSelected(true);
-       }else if(prueba.equals("recurrente")){
-       jRadioButton2.setSelected(true);
-       }
-        
-        jTextField5.setText(String.valueOf(jTable1.getValueAt(seleccion, 6)));
-        jTextField6.setText(String.valueOf(jTable1.getValueAt(seleccion, 7)));
+        funcionTabla();
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
@@ -278,20 +293,7 @@ jRadioButton1.setSelected(true);
     private void jTable1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyReleased
         // TODO add your handling code here:
      if (evt.getKeyCode()==evt.VK_UP || evt.getKeyCode()==evt.VK_DOWN) {
-              int seleccion = jTable1.getSelectedRow();
-              jTextField1.setText(String.valueOf(jTable1.getValueAt(seleccion, 1)));
-              jTextField2.setText(String.valueOf(jTable1.getValueAt(seleccion, 2)));
-              jTextField3.setText(String.valueOf(jTable1.getValueAt(seleccion, 3)));
-              jTextField4.setText(String.valueOf(jTable1.getValueAt(seleccion, 4)));
-              jTextField5.setText(String.valueOf(jTable1.getValueAt(seleccion, 5)));
-              jTextField6.setText(String.valueOf(jTable1.getValueAt(seleccion, 6)));
-               if (tipocliente.equals("primera visita")) {
-jRadioButton1.isSelected();
-       }else if(tipocliente.equals("recurrente")){
-       jRadioButton2.isSelected();
-       }
-              
-              
+        funcionTabla();
      }
     }//GEN-LAST:event_jTable1KeyReleased
 

@@ -5,6 +5,7 @@
  */
 package JDBC;
 
+import POJO.MarcaPOJO;
 import POJO.ProductoPOJO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
@@ -23,8 +25,8 @@ public class ProductoJDBC {
     static ResultSet resultado;
     private static final String TABLE="Producto";
     private static final String SQL_INSERT="INSERT INTO "+TABLE+" (Marca_idMarca, Proveedores_idProveedores, numeroIdentificacion, caracteristicas) VALUES (?,?,?,?)";
-    private static final String SQL_QUERY="SELECT * FROM "+TABLE;
-    private static final String SQL_QUERY_ALL = "Select * from " + TABLE;
+    private static final String SQL_QUERY="SELECT * FROM "+TABLE+ " WHERE numeroIdentificacion = ?";
+    private static final String SQL_QUERY_ALL = "SELECT * FROM " + TABLE ;
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idProducto=?";
     private static final String SQL_UPDATE="UPDATE "+TABLE+" SET Marca_idMarca=?, Proveedores_idProveedores=?, numeroIdentificacion=?, caracteristicas=? WHERE idProducto=?";
    
@@ -119,36 +121,65 @@ public class ProductoJDBC {
         }
         return true;
     }
-    public static DefaultTableModel cargarTabla() {
+     
+    public static ProductoPOJO consultar(String numeroidentificacion) {
         Connection con = null;
         PreparedStatement st = null;
-        DefaultTableModel dt = null;
-        String encabezados[] = {"Id","Nombre","Apellidos","Empresa","Telefono"};
+        ProductoPOJO pojo = new ProductoPOJO();
         try {
             con = Conexion.getConnection();
-            st = con.prepareStatement(SQL_QUERY_ALL);
-            dt = new DefaultTableModel();
-            dt.setColumnIdentifiers(encabezados);
+            st = con.prepareStatement(SQL_QUERY);
+            st.setString(1, numeroidentificacion);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                Object ob[] = new Object[5];
-                ProductoPOJO pojo = inflaPOJO(rs);
-                ob[0] = pojo.getIdProducto();
-                ob[1] = pojo.getMarca_idMarca();
-                ob[2] = pojo.getProveedores_idProveedores();
-                ob[3] = pojo.getNumeroIdentificacion();
-                ob[4] = pojo.getCaracteristica();
-                
-                dt.addRow(ob);
+                pojo = inflaPOJO(rs);
             }
-            rs.close();
         } catch (Exception e) {
-            System.out.println("Error al cargar la tabla " + e);
+            System.out.println("Error al consultar  " + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);
         }
-        return dt;
+        return pojo;
+    }
+    
+    public static DefaultMutableTreeNode cargarTree() {
+        Connection con = null;
+        PreparedStatement st = null;
+        PreparedStatement marcasST = null;
+        DefaultMutableTreeNode productos = new DefaultMutableTreeNode("Lentes");
+        DefaultMutableTreeNode marcas[];
+        try {
+            con = Conexion.getConnection();
+            marcasST = con.prepareStatement("SELECT * FROM marca");
+            ResultSet marcasRS = marcasST.executeQuery();
+            marcasRS.last();
+            int tamanho = marcasRS.getRow();
+            System.out.println(tamanho);
+            marcasRS.beforeFirst();
+            marcas = new DefaultMutableTreeNode[tamanho];
+            while (marcasRS.next()) {
+                int pos = marcasRS.getInt("idMarca")-1;
+                System.out.println(pos);
+                marcas[pos] = new DefaultMutableTreeNode(marcasRS.getString("nombre"));
+                st = con.prepareStatement("SELECT * FROM producto WHERE Marca_idMarca ="+marcasRS.getInt("idMarca"));
+                ResultSet rs = st.executeQuery();
+                while (rs.next()) {                    
+                    ProductoPOJO productoPOJO = new ProductoPOJO();
+                    productoPOJO = inflaPOJO(rs);
+                    DefaultMutableTreeNode productoAnhadido = new DefaultMutableTreeNode(productoPOJO.getNumeroIdentificacion());
+                    marcas[pos].add(productoAnhadido);
+                }
+                productos.add(marcas[pos]);
+            }
+            marcasRS.close();
+        } catch (Exception e) {
+            System.out.println("Error al cargar el tree" + e);
+        } finally {
+            Conexion.close(con);
+            Conexion.close(st);
+        }
+        return productos;
     }
     
     private static ProductoPOJO inflaPOJO(ResultSet rs) {

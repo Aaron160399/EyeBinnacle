@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
 public class ClienteJDBC {
         private static final String TABLE="Cliente";
     private static final String SQL_INSERT="INSERT INTO "+TABLE+" (nombre, apellidos, telefono, celular, tipoCliente, ultimavisita, proximavisita) VALUES (?,?,?,?,?,?,?)";
-    private static final String SQL_QUERY="SELECT * FROM "+TABLE;
+    private static final String SQL_QUERY="SELECT * FROM "+TABLE+ " WHERE idCliente = ?";
     private static final String SQL_QUERY_ALL = "Select * from " + TABLE;
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idCliente=?";
     private static final String SQL_UPDATE="UPDATE "+TABLE+" SET nombre=?, apellidos=?, telefono=?, celular=?, tipoCliente=?, ultimavisita=?, proximavisita=?  WHERE idCliente=?";
@@ -104,7 +104,7 @@ public class ClienteJDBC {
         Connection con = null;
         PreparedStatement st = null;
         DefaultTableModel dt = null;
-        String encabezados[] = {"Id","Nombre","Apellidos","Telefono","Celular","TipoCliente","UltimaVisita","ProximaVisita"};
+        String encabezados[] = {"Id","Nombre","Apellidos"};
         try {
             con = Conexion.getConnection();
             st = con.prepareStatement(SQL_QUERY_ALL);
@@ -117,11 +117,6 @@ public class ClienteJDBC {
                 ob[0] = pojo.getIdCliente();
                 ob[1] = pojo.getNombre();
                 ob[2] = pojo.getApellidos();
-                ob[3] = pojo.getTelefono();
-                ob[4] = pojo.getCelular();
-                ob[5] = pojo.getTipoCliente();
-                ob[6] = pojo.getUltimavisita();
-                ob[7] = pojo.getProximavisita();
                 
                 dt.addRow(ob);
             }
@@ -133,6 +128,27 @@ public class ClienteJDBC {
             Conexion.close(st);
         }
         return dt;
+    }
+    
+    public static ClientePOJO consultar(String id) {
+        Connection con = null;
+        PreparedStatement st = null;
+        ClientePOJO pojo = new ClientePOJO();
+        try {
+            con = Conexion.getConnection();
+            st = con.prepareStatement(SQL_QUERY);
+            st.setString(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                pojo = inflaPOJO(rs);
+            }
+        } catch (Exception e) {
+            System.out.println("Error al consultar  " + e);
+        } finally {
+            Conexion.close(con);
+            Conexion.close(st);
+        }
+        return pojo;
     }
     
     private static ClientePOJO inflaPOJO(ResultSet rs) {

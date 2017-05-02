@@ -6,6 +6,12 @@
 package Ventana;
 
 import JDBC.Conexion;
+import JDBC.MarcaJDBC;
+import JDBC.ProductoJDBC;
+import JDBC.ProveedorJDBC;
+import POJO.MarcaPOJO;
+import POJO.ProductoPOJO;
+import POJO.ProveedorPOJO;
 import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -36,17 +42,20 @@ public class Productos extends javax.swing.JFrame {
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         setOpacity(0);
         initComponents();
+        this.setTitle("Productos");
         getContentPane().setBackground(Color.WHITE);
         jToolBar1.setFloatable(false);
-        DefaultMutableTreeNode df = new DefaultMutableTreeNode("Nombres");
-        String a;
-        for (int i = 0; i < 10; i++) {
-            a = "Nombre" + i;
-            DefaultMutableTreeNode df2 = new DefaultMutableTreeNode();
-            df2.setUserObject(a);
-            df.add(df2);
-        }
-        DefaultTreeModel dtm = new DefaultTreeModel(df);
+//        DefaultMutableTreeNode df = new DefaultMutableTreeNode("Nombres");
+//        String a;
+//        for (int i = 0; i < 10; i++) {
+//            a = "Nombre" + i;
+//            DefaultMutableTreeNode df2 = new DefaultMutableTreeNode();
+//            DefaultMutableTreeNode df3 = new DefaultMutableTreeNode("Hola");
+//            df2.setUserObject(a);
+//            df.add(df2);
+//            df2.add(df3);
+//        }
+        DefaultTreeModel dtm = new DefaultTreeModel(ProductoJDBC.cargarTree());
         jTree1.setModel(dtm);
         setLocationRelativeTo(null);
         menuDoc = menu;
@@ -90,9 +99,7 @@ public class Productos extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(450, 692));
         setMinimumSize(new java.awt.Dimension(450, 692));
-        setPreferredSize(new java.awt.Dimension(450, 692));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTree1.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
@@ -237,7 +244,20 @@ public class Productos extends javax.swing.JFrame {
     private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTree1ValueChanged
         // TODO add your handling code here:
         if (evt.getNewLeadSelectionPath() != null) {
-            System.out.println(evt.getNewLeadSelectionPath().getLastPathComponent().toString());
+            try {
+                System.out.println(evt.getNewLeadSelectionPath().getLastPathComponent().toString());
+                String numeroIdentificacion = evt.getNewLeadSelectionPath().getLastPathComponent().toString();
+                ProductoPOJO productoPOJO = ProductoJDBC.consultar(numeroIdentificacion);
+                MarcaPOJO marcaPOJO = MarcaJDBC.consultar(String.valueOf(productoPOJO.getMarca_idMarca()));
+                ProveedorPOJO proveedorPOJO = ProveedorJDBC.consultar(String.valueOf(productoPOJO.getProveedores_idProveedores()));
+                jTextField1.setText(productoPOJO.getNumeroIdentificacion());
+                jTextField2.setText(marcaPOJO.getNombre());
+                jTextField3.setText(proveedorPOJO.getNombre());
+                jTextField4.setText(productoPOJO.getPrecioventa()+"");
+                jTextArea1.setText(productoPOJO.getCaracteristica());
+            } catch (Exception e) {
+                
+            }
         }
     }//GEN-LAST:event_jTree1ValueChanged
 

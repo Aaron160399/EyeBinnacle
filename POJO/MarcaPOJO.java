@@ -13,14 +13,6 @@ public class MarcaPOJO {
 private int idMarca;
 private String nombre;
 
-    public MarcaPOJO(String string) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public MarcaPOJO() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public int getIdMarca() {
         return idMarca;
     }
