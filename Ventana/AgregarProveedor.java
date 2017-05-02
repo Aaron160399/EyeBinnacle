@@ -163,7 +163,6 @@ public class AgregarProveedor extends javax.swing.JFrame {
         proveedorPOJO.setApellidos(apellidos);
         proveedorPOJO.setEmpresa(empresa);
         proveedorPOJO.setTelefono(telefono);
-        ProveedorJDBC proveedorJDBC = new ProveedorJDBC();
         int x = ProveedorJDBC.insertar(proveedorPOJO);
 
         if (x != 0) {
@@ -174,7 +173,7 @@ public class AgregarProveedor extends javax.swing.JFrame {
             jTextField3.setText("");
             jTextField4.setText("");
         } else {
-            JOptionPane.showMessageDialog(null, "CATASTROPHIC ERROR");
+            
         }
        
     }//GEN-LAST:event_jButton2ActionPerformed

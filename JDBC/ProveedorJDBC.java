@@ -38,10 +38,7 @@ public class ProveedorJDBC {
             st.setString(2, pojo.getApellidos());
             st.setString(3, pojo.getEmpresa());
             st.setString(4, pojo.getTelefono());
-            st.executeUpdate();
-            while (rs.next()) {                
-                id = rs.getInt(1);
-            }
+            id = st.executeUpdate();
         } catch (Exception e) {
             System.out.println("Error al insertar " + e);
         } finally {
