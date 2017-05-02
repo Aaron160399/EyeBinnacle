@@ -209,7 +209,7 @@ public class Proveedores extends javax.swing.JFrame {
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
-        int seleccion=jTable1.rowAtPoint(evt.getPoint());
+        int seleccion=jTable1.getSelectedRow();
         jTextField1.setText(String.valueOf(jTable1.getValueAt(seleccion, 1)));
         jTextField2.setText(String.valueOf(jTable1.getValueAt(seleccion, 2)));
         jTextField3.setText(String.valueOf(jTable1.getValueAt(seleccion, 3)));
