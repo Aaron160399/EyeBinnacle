@@ -23,6 +23,7 @@ public class AgregarProveedor extends javax.swing.JFrame {
     JButton botonPres;
     JFrame padre2;
     JFrame menu2;
+    Proveedores proveedores2;
     /**
      * Creates new form AgregarProveedor
      */
@@ -30,7 +31,7 @@ public class AgregarProveedor extends javax.swing.JFrame {
         initComponents();
     }
     
-    public AgregarProveedor(JButton boton, JFrame padre, JFrame menu) {
+    public AgregarProveedor(JButton boton, JFrame padre, JFrame menu, Proveedores proveedores) {
         setUndecorated(true);
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         setOpacity(0);
@@ -42,6 +43,7 @@ public class AgregarProveedor extends javax.swing.JFrame {
         botonPres = boton;
         padre2 = padre;
         menu2 = menu;
+        proveedores2 = proveedores;
     }
 
     /**
@@ -152,12 +154,12 @@ public class AgregarProveedor extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-         String nombre=jTextField1.getText();
+        String nombre=jTextField1.getText();
         String apellidos=jTextField2.getText();
         String empresa=jTextField3.getText();
         String telefono=jTextField4.getText();
         ProveedorPOJO proveedorPOJO=new ProveedorPOJO();
-       proveedorPOJO.setNombre(nombre);
+        proveedorPOJO.setNombre(nombre);
         proveedorPOJO.setApellidos(apellidos);
         proveedorPOJO.setEmpresa(empresa);
         proveedorPOJO.setTelefono(telefono);
@@ -166,6 +168,7 @@ public class AgregarProveedor extends javax.swing.JFrame {
 
         if (x != 0) {
             JOptionPane.showMessageDialog(null, "Guardado");
+            proveedores2.cargarTabla();
             jTextField1.setText("");
             jTextField2.setText("");
             jTextField3.setText("");

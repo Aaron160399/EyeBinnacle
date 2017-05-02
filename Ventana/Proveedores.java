@@ -196,7 +196,7 @@ public class Proveedores extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
        
-        AgregarProveedor agregarProveedor = new AgregarProveedor(jButton1, this, menuDoc);
+        AgregarProveedor agregarProveedor = new AgregarProveedor(jButton1, this, menuDoc, this);
         agregarProveedor.setVisible(true);
         JFrame ventanas[] = {menuDoc, this, agregarProveedor};
         jButton1.setEnabled(false);
