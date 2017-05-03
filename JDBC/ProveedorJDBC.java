@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -146,6 +148,33 @@ public class ProveedorJDBC {
             Conexion.close(st);
         }
         return pojo;
+    }
+    
+    public static DefaultComboBoxModel cargarCombo() {
+        Connection con = null;
+        PreparedStatement st = null;
+        DefaultComboBoxModel combo = null;
+        try {
+            combo = new DefaultComboBoxModel();
+            con = Conexion.getConnection();
+            st = con.prepareStatement("SELECT * FROM proveedor ORDER BY idProveedores");
+            ResultSet rs = st.executeQuery();
+            combo.addElement("Seleccionar proveedor");
+            while (rs.next()) {
+                String valor = rs.getString("nombre")+ " "+ rs.getString("apellidos");
+                combo.addElement(valor);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "ERROR Combo");
+        } finally {
+            try {
+                st.close();
+                con.close();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "ERROR CLOSE");
+            }
+        }
+        return combo;
     }
     
     private static ProveedorPOJO inflaPOJO(ResultSet rs) {

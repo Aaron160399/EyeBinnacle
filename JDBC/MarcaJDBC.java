@@ -30,7 +30,7 @@ public class MarcaJDBC {
     private static final String SQL_QUERY_ALL = "Select * from " + TABLE;
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idMarca=?";
     private static final String SQL_UPDATE="UPDATE "+TABLE+" SET nombre=? WHERE idMarca=?";
-    private static final String SQL_SEARCH="SELECT id FROM "+TABLE+" WHERE nombre=?";
+    private static final String SQL_SEARCH="SELECT idMarca FROM "+TABLE+" WHERE nombre=?";
    
     public static int insertar(MarcaPOJO pojo) {
         
@@ -144,7 +144,7 @@ public class MarcaJDBC {
             }
             rs.close();
         } catch (Exception e) {
-            System.out.println("Error al cargar la tabla " + e);
+            System.out.println("Error al cargar la tabla ID" + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);

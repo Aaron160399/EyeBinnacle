@@ -55,12 +55,16 @@ public class Productos extends javax.swing.JFrame {
 //            df.add(df2);
 //            df2.add(df3);
 //        }
-        DefaultTreeModel dtm = new DefaultTreeModel(ProductoJDBC.cargarTree());
-        jTree1.setModel(dtm);
+        cargarTree();
         setLocationRelativeTo(null);
         menuDoc = menu;
         botonPres = boton;
         menuDoctora = menuDoctora2;
+    }
+    
+    public void cargarTree(){
+        DefaultTreeModel dtm = new DefaultTreeModel(ProductoJDBC.cargarTree());
+        jTree1.setModel(dtm);
     }
    
      
@@ -245,7 +249,6 @@ public class Productos extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (evt.getNewLeadSelectionPath() != null) {
             try {
-                System.out.println(evt.getNewLeadSelectionPath().getLastPathComponent().toString());
                 String numeroIdentificacion = evt.getNewLeadSelectionPath().getLastPathComponent().toString();
                 ProductoPOJO productoPOJO = ProductoJDBC.consultar(numeroIdentificacion);
                 MarcaPOJO marcaPOJO = MarcaJDBC.consultar(String.valueOf(productoPOJO.getMarca_idMarca()));
@@ -270,7 +273,7 @@ public class Productos extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        AgregarProducto agregarProducto = new AgregarProducto(jButton1, this, menuDoc);
+        AgregarProducto agregarProducto = new AgregarProducto(jButton1, this, menuDoc, this);
         agregarProducto.setVisible(true);
         JFrame ventanas[] = {menuDoc, this, agregarProducto};
         jButton1.setEnabled(false);

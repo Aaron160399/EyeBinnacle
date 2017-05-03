@@ -13,6 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -24,7 +27,7 @@ public class ProductoJDBC {
     static Statement sentencia;
     static ResultSet resultado;
     private static final String TABLE="Producto";
-    private static final String SQL_INSERT="INSERT INTO "+TABLE+" (Marca_idMarca, Proveedores_idProveedores, numeroIdentificacion, caracteristicas) VALUES (?,?,?,?)";
+    private static final String SQL_INSERT="INSERT INTO "+TABLE+" (Marca_idMarca, Proveedores_idProveedores, numeroIdentificacion, caracteristicas, precio) VALUES (?,?,?,?,?)";
     private static final String SQL_QUERY="SELECT * FROM "+TABLE+ " WHERE numeroIdentificacion = ?";
     private static final String SQL_QUERY_ALL = "SELECT * FROM " + TABLE ;
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idProducto=?";
@@ -34,7 +37,6 @@ public class ProductoJDBC {
         Connection con = null;
         PreparedStatement st = null;
         int id = 0;
-        ResultSet rs = null;
         try {
             con = Conexion.getConnection();
             st = con.prepareStatement(SQL_INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -42,16 +44,14 @@ public class ProductoJDBC {
             st.setInt(2, pojo.getProveedores_idProveedores());
             st.setString(3, pojo.getNumeroIdentificacion());
             st.setString(4, pojo.getCaracteristica());
-            st.executeUpdate();
-            while (rs.next()) {                
-                id = rs.getInt(1);
-            }
+            st.setDouble(5, pojo.getPrecioventa());
+            id = st.executeUpdate();
+            System.out.println(id);
         } catch (Exception e) {
             System.out.println("Error al insertar " + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);
-            Conexion.close(rs);
         }
         return id;
     }
@@ -143,6 +143,33 @@ public class ProductoJDBC {
         return pojo;
     }
     
+    public static DefaultComboBoxModel cargarCombo() {
+        Connection con = null;
+        PreparedStatement st = null;
+        DefaultComboBoxModel combo = null;
+        try {
+            combo = new DefaultComboBoxModel();
+            con = Conexion.getConnection();
+            st = con.prepareStatement("SELECT * FROM marca ORDER BY idMarca");
+            ResultSet rs = st.executeQuery();
+            combo.addElement("Seleccionar marca");
+            while (rs.next()) {
+                String valor = rs.getString("nombre");
+                combo.addElement(valor);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "ERROR Combo");
+        } finally {
+            try {
+                st.close();
+                con.close();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "ERROR CLOSE");
+            }
+        }
+        return combo;
+    }
+    
     public static DefaultMutableTreeNode cargarTree() {
         Connection con = null;
         PreparedStatement st = null;
@@ -155,12 +182,10 @@ public class ProductoJDBC {
             ResultSet marcasRS = marcasST.executeQuery();
             marcasRS.last();
             int tamanho = marcasRS.getRow();
-            System.out.println(tamanho);
             marcasRS.beforeFirst();
             marcas = new DefaultMutableTreeNode[tamanho];
             while (marcasRS.next()) {
                 int pos = marcasRS.getInt("idMarca")-1;
-                System.out.println(pos);
                 marcas[pos] = new DefaultMutableTreeNode(marcasRS.getString("nombre"));
                 st = con.prepareStatement("SELECT * FROM producto WHERE Marca_idMarca ="+marcasRS.getInt("idMarca"));
                 ResultSet rs = st.executeQuery();
@@ -191,6 +216,7 @@ public class ProductoJDBC {
             pojo.setProveedores_idProveedores(rs.getInt("Proveedores_idProveedores"));
             pojo.setNumeroIdentificacion(rs.getString("NumeroIdentificacion"));
             pojo.setCaracteristica(rs.getString("Caracteristicas"));
+            pojo.setPrecioventa(rs.getDouble("precio"));
         } catch (SQLException ex) {
             System.out.println("Error al inflar pojo " + ex);
         }

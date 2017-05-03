@@ -5,8 +5,8 @@
  */
 package Ventana;
 
-
 import JDBC.MarcaJDBC;
+import JDBC.ProductoJDBC;
 import JDBC.ProveedorJDBC;
 import POJO.MarcaPOJO;
 import POJO.ProductoPOJO;
@@ -26,92 +26,31 @@ import javax.swing.JRootPane;
  * @author aaron
  */
 public class AgregarProducto extends javax.swing.JFrame {
+
     JButton botonPres;
     JFrame padre2;
     JFrame menu2;
-     Connection con;
-     Connection con1;
+    Connection con;
+    Connection con1;
     Statement st;
     Statement st1;
     ResultSet rs;
     ResultSet rs1;
     private Statement instruccion;
     private ResultSet conjuntoResultados;
-    
+    boolean sePuede = false;
+    Productos producto2;
+
     /**
      * Creates new form AgregarProducto
      */
     public AgregarProducto() {
         initComponents();
-conjuntoResultados=null;
-instruccion=null;
-    cargartabla();
-//    cargartabla2();
+        conjuntoResultados = null;
+        instruccion = null;
     }
-    public void cargartabla(){
-    try{
-      con = DriverManager.getConnection("jdbc:mysql://localhost/optica","root","");
-      st = con.createStatement();
-      st1=con.createStatement();
-      jComboBox1.removeAllItems();
-      jComboBox2.removeAllItems();
-     
-      String s = "select nombre from marca";
-      String p = "select nombre from proveedor";
-    
-      
-      rs = st.executeQuery(s);
-      rs1 = st1.executeQuery(p);
-       while(rs.next())
-        {
-            jComboBox1.addItem(rs.getString(1));
-            
-        }
-       while(rs1.next()){
-       jComboBox2.addItem(rs1.getString(1));
-       }
-    }catch(Exception e){
-        JOptionPane.showMessageDialog(null, "ERROR");
-    }finally{
-        try{
-            st.close();
-            rs.close();
-            con.close();
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "ERROR CLOSE");
-        }
-    }
-    }
-//    public void cargartabla2(){
-//    try{
-//      con1 = DriverManager.getConnection("jdbc:mysql://localhost/optica","root","");
-//      st1 = con1.createStatement();
-//      jComboBox2.removeAllItems();
-//     
-//      String s = "select nombre from proveedor";
-//      String p="select nombre from proveedor";
-//      
-//      rs = st.executeQuery(s);
-//      rs1=st1.executeQuery(p);
-//      while(rs1.next())
-//        {
-//            jComboBox2.addItem(rs1.getString(1));
-//            
-//        }
-//    }catch(Exception e){
-//        JOptionPane.showMessageDialog(null, "ERROR");
-//    }finally{
-//        try{
-//            st1.close();
-//            rs1.close();
-//            con1.close();
-//        }catch(Exception e){
-//            JOptionPane.showMessageDialog(null, "ERROR CLOSE");
-//        }
-//    }
-//    }
-    
-    public AgregarProducto(JButton boton, JFrame padre, JFrame menu) {
+
+    public AgregarProducto(JButton boton, JFrame padre, JFrame menu, Productos producto) {
         setUndecorated(true);
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         setOpacity(0);
@@ -119,9 +58,16 @@ instruccion=null;
         getContentPane().setBackground(Color.WHITE);
         jToolBar1.setFloatable(false);
         setLocationRelativeTo(null);
+        jTextField1.setEnabled(false);
+        jComboBox1.removeAllItems();
+        jComboBox1.setModel(ProductoJDBC.cargarCombo());
+        jComboBox2.removeAllItems();
+        jComboBox2.setModel(ProveedorJDBC.cargarCombo());
+        sePuede = true;
         botonPres = boton;
         padre2 = padre;
         menu2 = menu;
+        producto2 = producto;
     }
 
     /**
@@ -140,8 +86,10 @@ instruccion=null;
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jTextField4 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        jTextField1 = new javax.swing.JTextField();
+        jComboBox1 = new javax.swing.JComboBox<String>();
+        jComboBox2 = new javax.swing.JComboBox<String>();
+        jCheckBox1 = new javax.swing.JCheckBox();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
@@ -152,47 +100,64 @@ instruccion=null;
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(300, 692));
         setMinimumSize(new java.awt.Dimension(300, 692));
-        setPreferredSize(new java.awt.Dimension(300, 692));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText("jLabel1");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 160, 150, 150));
 
         jLabel2.setText("No. de identificación");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, -1, -1));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 390, -1, -1));
 
         jLabel3.setText("Marca");
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 320, -1, -1));
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 360, 170, -1));
+        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 390, 170, -1));
 
         jLabel4.setText("Proveedor");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 400, -1, -1));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 430, -1, -1));
 
         jLabel5.setText("Precio de venta");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 440, -1, -1));
-        getContentPane().add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 440, 170, -1));
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 470, -1, -1));
+        getContentPane().add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 470, 170, -1));
+        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 350, 170, -1));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jComboBox1MouseClicked(evt);
             }
         });
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 320, -1, -1));
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox1ItemStateChanged(evt);
+            }
+        });
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 320, -1, -1));
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 400, -1, -1));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 430, -1, -1));
+
+        jCheckBox1.setText("Nueva");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, -1, -1));
 
         jLabel6.setText("Características");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 470, -1, -1));
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 510, -1, -1));
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 500, 280, 180));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 540, 280, 140));
 
         jToolBar1.setRollover(true);
 
@@ -246,34 +211,32 @@ instruccion=null;
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-        String marca=jComboBox1.getItemAt(jComboBox1.getSelectedIndex());
-        String numeroIdentificacion=jTextField2.getText();
-        String proveedor=jComboBox2.getItemAt(WIDTH);
-        String goku1=jTextField4.getText();
-        double precio = Double.parseDouble(goku1);
-        String caracteristica=jTextArea1.getText();
-        ProductoPOJO productoPojo=new ProductoPOJO();
-        MarcaPOJO marcaPOJO = new MarcaPOJO();
-        MarcaJDBC marcaJDBC = new MarcaJDBC();
-        int idMarca = marcaJDBC.obtenerID(marca);
-        ProveedorPOJO proveedorPOJO = new ProveedorPOJO();
-        productoPojo.setMarca_idMarca(idMarca);
-        productoPojo.setNumeroIdentificacion(numeroIdentificacion);
-        proveedorPOJO.setNombre(proveedor);
-        productoPojo.setPrecioventa(precio);
-        ProveedorJDBC proveedorJDBC = new ProveedorJDBC();
-        int x = ProveedorJDBC.insertar(proveedorPOJO);
+        String numeroIdentificacion = jTextField2.getText();
+        double precioVenta = Double.parseDouble(jTextField4.getText());
+        int idMarca = jComboBox1.getSelectedIndex();
+        int idProveedor = jComboBox2.getSelectedIndex();
+        String caracteristica = jTextArea1.getText();
+        
+        ProductoPOJO productoPOJO = new ProductoPOJO();
+        productoPOJO.setMarca_idMarca(idMarca);
+        productoPOJO.setProveedores_idProveedores(idProveedor);
+        productoPOJO.setNumeroIdentificacion(numeroIdentificacion);
+        productoPOJO.setCaracteristica(caracteristica);
+        productoPOJO.setPrecioventa(precioVenta);
+        
+        int x = ProductoJDBC.insertar(productoPOJO);
 
         if (x != 0) {
             JOptionPane.showMessageDialog(null, "Guardado");
+            producto2.cargarTree();
+            jComboBox1.setSelectedIndex(0);
+            jComboBox2.setSelectedIndex(0);
             jTextArea1.setText("");
             jTextField2.setText("");
             jTextField4.setText("");
         } else {
             JOptionPane.showMessageDialog(null, "CATASTROPHIC ERROR");
         }
-       
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jComboBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox1MouseClicked
@@ -286,8 +249,28 @@ instruccion=null;
         jTextField2.setText(null);
         jTextField4.setText(null);
         jTextArea1.setText(null);
-        
+
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        // TODO add your handling code here:
+        if (jCheckBox1.isSelected()) {
+            jTextField1.setEnabled(true);
+            jComboBox1.setEnabled(false);
+        } else {
+            jTextField1.setEnabled(false);
+            jComboBox1.setEnabled(true);
+        }
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -328,6 +311,7 @@ instruccion=null;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
@@ -339,6 +323,7 @@ instruccion=null;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JToolBar jToolBar1;
