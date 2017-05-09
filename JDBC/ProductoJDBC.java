@@ -55,6 +55,7 @@ public class ProductoJDBC {
         }
         return id;
     }
+    
     public static ArrayList<String>llenar_combo(){
     ArrayList<String> lista=new ArrayList<String>();
     String q="SELECT * FORM marca";
@@ -72,6 +73,7 @@ public class ProductoJDBC {
         }
     return lista;
     }
+    
     public static boolean eliminar(String id) {
         Connection con = null;
         PreparedStatement st = null;
@@ -178,7 +180,7 @@ public class ProductoJDBC {
         DefaultMutableTreeNode marcas[];
         try {
             con = Conexion.getConnection();
-            marcasST = con.prepareStatement("SELECT * FROM marca");
+            marcasST = con.prepareStatement("SELECT * FROM marca ORDER BY nombre ASC");
             ResultSet marcasRS = marcasST.executeQuery();
             marcasRS.last();
             int tamanho = marcasRS.getRow();

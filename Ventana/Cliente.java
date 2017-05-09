@@ -6,6 +6,7 @@
 package Ventana;
 
 import JDBC.ClienteJDBC;
+import JDBC.ConsultaJDBC;
 import POJO.ClientePOJO;
 import java.awt.Color;
 import java.sql.Date;
@@ -13,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -32,9 +34,12 @@ public class Cliente extends javax.swing.JFrame {
         initComponents();
         cargarTabla();
     }
+    
     public void cargarTabla(){
-    jTable1.setModel(ClienteJDBC.cargarTabla());
+        jTable1.setModel(ClienteJDBC.cargarTabla());
+        jTable1.setRowSorter(new TableRowSorter(ClienteJDBC.cargarTabla()));
     }
+    
     public Cliente(JFrame menu, JButton boton, MenuDoctora menuDoctora2) {
         setUndecorated(true);
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
@@ -63,6 +68,7 @@ public class Cliente extends javax.swing.JFrame {
         jTextField4.setText(clientePOJO.getCelular());
         
         jTextField5.setText(clientePOJO.getUltimavisita()+"");
+        System.out.println("Inicio método: "+ConsultaJDBC.obtenerUltimaVisita(clientePOJO.getIdCliente()));
         if (jTextField5.getText().equals("null")) {
             jTextField5.setText("");
         }

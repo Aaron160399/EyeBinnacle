@@ -5,6 +5,7 @@
  */
 package Ventana;
 
+import POJO.UsuarioPOJO;
 import java.awt.Color;
 import java.awt.Toolkit;
 import javax.swing.Icon;

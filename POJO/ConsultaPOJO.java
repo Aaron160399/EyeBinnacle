@@ -15,11 +15,13 @@ import javax.xml.soap.Text;
  */
 public class ConsultaPOJO {
     private int IdCita;
-private int Cliente_idCliente;
-private int Usuario_idUsuario;
+    private int Cliente_idCliente;
+    private int Usuario_idUsuario;
     private Date fecha;
     private Time horaInicio;
     private String asunto;
+    private String visita;
+    private String aseguradora_empresa;
     private Date proximaVisita;
     private String estatus;
     private String resultado;
@@ -94,6 +96,22 @@ private int Usuario_idUsuario;
 
     public void setResultado(String resultado) {
         this.resultado = resultado;
+    }
+
+    public String getVisita() {
+        return visita;
+    }
+
+    public void setVisita(String visita) {
+        this.visita = visita;
+    }
+
+    public String getAseguradora_empresa() {
+        return aseguradora_empresa;
+    }
+
+    public void setAseguradora_empresa(String aseguradora_empresa) {
+        this.aseguradora_empresa = aseguradora_empresa;
     }
     
 

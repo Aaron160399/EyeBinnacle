@@ -30,28 +30,25 @@ public class MarcaJDBC {
     private static final String SQL_QUERY_ALL = "Select * from " + TABLE;
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idMarca=?";
     private static final String SQL_UPDATE="UPDATE "+TABLE+" SET nombre=? WHERE idMarca=?";
-    private static final String SQL_SEARCH="SELECT idMarca FROM "+TABLE+" WHERE nombre=?";
+    private static final String SQL_SEARCH="SELECT * FROM "+TABLE+" WHERE nombre=?";
    
     public static int insertar(MarcaPOJO pojo) {
         
         Connection con = null;
         PreparedStatement st = null;
         int id = 0;
-        ResultSet rs = null;
         try {
             con = Conexion.getConnection();
             st = con.prepareStatement(SQL_INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
             st.setString(1, pojo.getNombre());
             st.executeUpdate();
-            while (rs.next()) {                
-                id = rs.getInt(1);
-            }
         } catch (Exception e) {
             System.out.println("Error al insertar " + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);
-            Conexion.close(rs);
+            id = obtenerID(pojo.getNombre());
+            System.out.println(id);
         }
         return id;
     }
@@ -180,7 +177,7 @@ public class MarcaJDBC {
             pojo.setIdMarca(rs.getInt("idMarca"));
             pojo.setNombre(rs.getString("nombre"));
         } catch (SQLException ex) {
-            System.out.println("Error al inflar pojo " + ex);
+            System.out.println("Error al inflar pojo marca " + ex);
         }
         return pojo;
     }

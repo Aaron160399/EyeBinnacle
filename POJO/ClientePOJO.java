@@ -21,6 +21,20 @@ public class ClientePOJO {
     private Date proximavisita;
     private Date ultimavisita;
 
+    public ClientePOJO(int IdCliente, String nombre, String apellidos, String telefono, String celular, String tipoCliente, Date proximavisita, Date ultimavisita) {
+        this.IdCliente = IdCliente;
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.telefono = telefono;
+        this.celular = celular;
+        this.tipoCliente = tipoCliente;
+        this.proximavisita = proximavisita;
+        this.ultimavisita = ultimavisita;
+    }
+
+    public ClientePOJO() {
+    }
+
     public int getIdCliente() {
         return IdCliente;
     }
@@ -84,7 +98,9 @@ public class ClientePOJO {
     public void setUltimavisita(Date ultimavisita) {
         this.ultimavisita = ultimavisita;
     }
-    
 
-    
+    @Override
+    public String toString() {
+        return this.nombre+" "+apellidos;
+    }
 }

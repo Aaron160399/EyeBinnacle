@@ -6,6 +6,7 @@
 package JDBC;
 
 import POJO.ClientePOJO;
+import com.mxrck.autocompleter.TextAutoCompleter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -128,6 +129,29 @@ public class ClienteJDBC {
             Conexion.close(st);
         }
         return dt;
+    }
+    
+    public static void cargarCompleter(TextAutoCompleter completador) {
+        Connection con = null;
+        PreparedStatement st = null;
+        try {
+            con = Conexion.getConnection();
+            st = con.prepareStatement("SELECT * FROM cliente");//Aquí cambia "persona" por el nombre de tu tabla
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                //Aquí crea el objeto de tu propia tabla en la que buscas información
+                ClientePOJO pojo = new ClientePOJO(rs.getInt("idCliente"), rs.getString("nombre"), rs.getString("apellidos"), 
+                        rs.getString("telefono"), rs.getString("celular"), rs.getString("tipoCliente"), rs.getDate("ultimavisita"),
+                        rs.getDate("proximavisita"));
+                    completador.addItem(pojo);
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.out.println("Error al cargar el AutoCompleter " + e);
+        } finally {
+            Conexion.close(con);
+            Conexion.close(st);
+        }
     }
     
     public static ClientePOJO consultar(String id) {

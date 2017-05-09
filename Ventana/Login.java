@@ -6,15 +6,17 @@
 package Ventana;
 
 import JDBC.UsuarioJDBC;
+import POJO.UsuarioPOJO;
 import java.awt.Color;
 import javax.swing.JDesktopPane;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author salva
  */
 public class Login extends javax.swing.JFrame {
-
+    UsuarioPOJO usuarioPOJO;
     /**
      * Creates new form Login
      */
@@ -36,6 +38,7 @@ public class Login extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         usuario = new javax.swing.JTextField();
         jPasswordField1 = new javax.swing.JPasswordField();
+        jLabel4 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -54,6 +57,9 @@ public class Login extends javax.swing.JFrame {
         jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 340, 110, -1));
         jPanel1.add(usuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 180, 290, 50));
         jPanel1.add(jPasswordField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 250, 290, 50));
+
+        jLabel4.setForeground(new java.awt.Color(255, 0, 0));
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 310, 290, 20));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/pass_txt.png"))); // NOI18N
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 250, 340, -1));
@@ -89,14 +95,20 @@ public class Login extends javax.swing.JFrame {
         UsuarioJDBC cp = new UsuarioJDBC();
         String user = usuario.getText();
         String password = jPasswordField1.getText();
-        if (user.equalsIgnoreCase("doctora")) {
-            MenuDoctora menuDoctora = new MenuDoctora();
-            menuDoctora.setVisible(true);
+        int usuarioJDBC = UsuarioJDBC.login(user, password);
+        usuarioPOJO = UsuarioJDBC.consultar(String.valueOf(usuarioJDBC));
+        if (usuarioJDBC != 0) {
+            JOptionPane.showMessageDialog(null, "Bienvenido\nHa ingresado satisfactoriamente al sistema "+user);
+            if (usuarioJDBC == 1) {
+                MenuDoctora menuDoctora = new MenuDoctora();
+                menuDoctora.setVisible(true);
+            } else {
+                MenuSecretaria menuSecretaria = new MenuSecretaria(usuarioPOJO);
+                menuSecretaria.setVisible(true);
+            }
             this.dispose();
-        } else if (user.equalsIgnoreCase("secretaria")) {
-            MenuSecretaria menuSecretaria = new MenuSecretaria();
-            menuSecretaria.setVisible(true);
-            this.dispose();
+        } else {
+            jLabel4.setText("Usuario o contraseña incorrecto");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -141,8 +153,10 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField usuario;
     // End of variables declaration//GEN-END:variables
 }
+

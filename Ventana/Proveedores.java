@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -30,7 +31,19 @@ public class Proveedores extends javax.swing.JFrame {
     }
     public void cargarTabla(){
         jTable1.setModel(ProveedorJDBC.cargarTabla());
+        jTable1.setRowSorter(new TableRowSorter(ProveedorJDBC.cargarTabla()));
     }
+    
+    public void obtenerInformacion(){
+        int seleccion=jTable1.getSelectedRow();
+        String id = jTable1.getValueAt(seleccion, 0).toString();
+        ProveedorPOJO proveedorPOJO = ProveedorJDBC.consultar(id);
+        jTextField1.setText(proveedorPOJO.getNombre());
+        jTextField2.setText(proveedorPOJO.getApellidos());
+        jTextField3.setText(proveedorPOJO.getEmpresa());
+        jTextField4.setText(proveedorPOJO.getTelefono());
+    }
+    
     public Proveedores(JFrame menu, JButton boton, MenuDoctora menuDoctora2) {
         setUndecorated(true);
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
@@ -64,8 +77,6 @@ public class Proveedores extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
         jToolBar1 = new javax.swing.JToolBar();
         jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -100,7 +111,7 @@ public class Proveedores extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 288, 442));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 182, 288, 470));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Nombre");
@@ -121,13 +132,6 @@ public class Proveedores extends javax.swing.JFrame {
         getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(449, 239, 150, -1));
         getContentPane().add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(449, 295, 150, -1));
         getContentPane().add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(449, 348, 150, -1));
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel5.setText("Filtrar por");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, -1, -1));
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 180, 150, -1));
 
         jToolBar1.setRollover(true);
         jToolBar1.setMaximumSize(new java.awt.Dimension(161, 40));
@@ -209,11 +213,7 @@ public class Proveedores extends javax.swing.JFrame {
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
-        int seleccion=jTable1.getSelectedRow();
-        jTextField1.setText(String.valueOf(jTable1.getValueAt(seleccion, 1)));
-        jTextField2.setText(String.valueOf(jTable1.getValueAt(seleccion, 2)));
-        jTextField3.setText(String.valueOf(jTable1.getValueAt(seleccion, 3)));
-        jTextField4.setText(String.valueOf(jTable1.getValueAt(seleccion, 4)));
+        obtenerInformacion();
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -241,11 +241,7 @@ public class Proveedores extends javax.swing.JFrame {
     private void jTable1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyReleased
         // TODO add your handling code here:
         if (evt.getKeyCode()==evt.VK_UP || evt.getKeyCode()==evt.VK_DOWN) {
-              int seleccion = jTable1.getSelectedRow();
-        jTextField1.setText(String.valueOf(jTable1.getValueAt(seleccion, 1)));
-        jTextField2.setText(String.valueOf(jTable1.getValueAt(seleccion, 2)));
-        jTextField3.setText(String.valueOf(jTable1.getValueAt(seleccion, 3)));
-        jTextField4.setText(String.valueOf(jTable1.getValueAt(seleccion, 4)));
+            obtenerInformacion();
         }
     }//GEN-LAST:event_jTable1KeyReleased
 
@@ -289,12 +285,10 @@ public class Proveedores extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

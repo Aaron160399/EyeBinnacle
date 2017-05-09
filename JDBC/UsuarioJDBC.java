@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
 public class UsuarioJDBC {
     private static final String TABLE="Usuario";
     private static final String SQL_INSERT="INSERT INTO "+TABLE+" (nombre) VALUES (?)";
-    private static final String SQL_QUERY="SELECT * FROM "+TABLE;
+    private static final String SQL_QUERY="SELECT * FROM "+TABLE+" WHERE idUsuario = ?";
     private static final String SQL_QUERY_ALL = "Select * from " + TABLE;
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idMarca=?";
     private static final String SQL_UPDATE="UPDATE "+TABLE+" SET nombre=? WHERE idMarca=?";
@@ -121,13 +121,51 @@ public static int insertar(UsuarioPOJO pojo) {
         return dt;
     }
     
+    public static UsuarioPOJO consultar(String id) {
+        Connection con = null;
+        PreparedStatement st = null;
+        UsuarioPOJO pojo = new UsuarioPOJO();
+        try {
+            con = Conexion.getConnection();
+            st = con.prepareStatement(SQL_QUERY);
+            st.setString(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                pojo = inflaPOJO(rs);
+            }
+        } catch (Exception e) {
+            System.out.println("Error al consultar usuario " + e);
+        } finally {
+            Conexion.close(con);
+            Conexion.close(st);
+        }
+        return pojo;
+    }
+    
+    public static int login (String usuario, String password){
+        Connection con = null;
+        int id = 0;
+        try {
+            String consult = "SELECT * FROM "+TABLE+" WHERE nombre = '"+usuario+"' and contrasena = '"+password+"'";
+            con = Conexion.getConnection();
+            PreparedStatement st = con.prepareStatement(consult);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {                
+                id = rs.getInt("idUsuario");
+            }
+        } catch (Exception e) {
+            System.out.println("Error on login "+e);
+        }
+        return id;
+    }
+    
     private static UsuarioPOJO inflaPOJO(ResultSet rs) {
 
        UsuarioPOJO pojo = new UsuarioPOJO();
         try {
-            pojo.setIdUsuario(rs.getInt("idMarca"));
+            pojo.setIdUsuario(rs.getInt("idUsuario"));
             pojo.setNombre(rs.getString("nombre"));
-            pojo.setContrasena(rs.getString("contraseña"));
+            pojo.setContrasena(rs.getString("contrasena"));
         } catch (SQLException ex) {
             System.out.println("Error al inflar pojo " + ex);
         }

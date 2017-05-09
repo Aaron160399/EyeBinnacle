@@ -82,11 +82,11 @@ public class AgregarProducto extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
         jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jFormattedTextField1 = new javax.swing.JFormattedTextField();
         jComboBox1 = new javax.swing.JComboBox<String>();
         jComboBox2 = new javax.swing.JComboBox<String>();
         jCheckBox1 = new javax.swing.JCheckBox();
@@ -111,15 +111,17 @@ public class AgregarProducto extends javax.swing.JFrame {
 
         jLabel3.setText("Marca");
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 320, -1, -1));
-        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 390, 170, -1));
 
         jLabel4.setText("Proveedor");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 430, -1, -1));
 
         jLabel5.setText("Precio de venta");
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 470, -1, -1));
-        getContentPane().add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 470, 170, -1));
         getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 350, 170, -1));
+        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 390, 170, -1));
+
+        jFormattedTextField1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,###.00"))));
+        getContentPane().add(jFormattedTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 470, 170, -1));
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -183,7 +185,7 @@ public class AgregarProducto extends javax.swing.JFrame {
         });
         jToolBar1.add(jButton2);
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/cancelar32.png"))); // NOI18N
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/clearazul32.png"))); // NOI18N
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -212,11 +214,22 @@ public class AgregarProducto extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         String numeroIdentificacion = jTextField2.getText();
-        double precioVenta = Double.parseDouble(jTextField4.getText());
-        int idMarca = jComboBox1.getSelectedIndex();
+        double precioVenta = Double.parseDouble(jFormattedTextField1.getText());
         int idProveedor = jComboBox2.getSelectedIndex();
         String caracteristica = jTextArea1.getText();
-        
+        int idMarca = jComboBox1.getSelectedIndex();
+        if (jCheckBox1.isSelected()) {
+            MarcaPOJO marcaPOJO = new MarcaPOJO();
+            marcaPOJO.setNombre(jTextField1.getText());
+            idMarca = MarcaJDBC.insertar(marcaPOJO);
+            if (idMarca != 0) {
+                System.out.println("Nueva Marca Guardada");
+            } else {
+                System.out.println("Nueva marca no guardada");
+            }
+        } else {
+            idMarca = jComboBox1.getSelectedIndex();
+        }
         ProductoPOJO productoPOJO = new ProductoPOJO();
         productoPOJO.setMarca_idMarca(idMarca);
         productoPOJO.setProveedores_idProveedores(idProveedor);
@@ -229,11 +242,15 @@ public class AgregarProducto extends javax.swing.JFrame {
         if (x != 0) {
             JOptionPane.showMessageDialog(null, "Guardado");
             producto2.cargarTree();
+            jCheckBox1.setSelected(false);
+            jComboBox1.setEnabled(true);
             jComboBox1.setSelectedIndex(0);
             jComboBox2.setSelectedIndex(0);
             jTextArea1.setText("");
+            jTextField1.setEnabled(false);
+            jTextField1.setText("");
             jTextField2.setText("");
-            jTextField4.setText("");
+            jFormattedTextField1.setText("");
         } else {
             JOptionPane.showMessageDialog(null, "CATASTROPHIC ERROR");
         }
@@ -246,10 +263,15 @@ public class AgregarProducto extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        jTextField1.setEnabled(false);
+        jTextField1.setText(null);
         jTextField2.setText(null);
-        jTextField4.setText(null);
+        jFormattedTextField1.setText(null);
         jTextArea1.setText(null);
-
+        jCheckBox1.setSelected(false);
+        jComboBox1.setEnabled(true);
+        jComboBox1.setSelectedIndex(0);
+        jComboBox2.setSelectedIndex(0);        
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
@@ -314,6 +336,7 @@ public class AgregarProducto extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -325,7 +348,6 @@ public class AgregarProducto extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 }
