@@ -66,18 +66,7 @@ public class Cliente extends javax.swing.JFrame {
         jTextField2.setText(clientePOJO.getApellidos());
         jTextField3.setText(clientePOJO.getTelefono());
         jTextField4.setText(clientePOJO.getCelular());
-        
-        jTextField5.setText(clientePOJO.getUltimavisita()+"");
-        System.out.println("Inicio método: "+ConsultaJDBC.obtenerUltimaVisita(clientePOJO.getIdCliente()));
-        if (jTextField5.getText().equals("null")) {
-            jTextField5.setText("");
-        }
-        
-        jTextField6.setText(clientePOJO.getProximavisita()+"");
-        if (jTextField6.getText().equals("null")) {
-            jTextField6.setText("");
-        }
-        
+                      
         if (clientePOJO.getTipoCliente().equalsIgnoreCase("primera visita")) {
             jRadioButton1.setSelected(true);
         } else if (clientePOJO.getTipoCliente().equalsIgnoreCase("recurrente")) {
@@ -242,8 +231,6 @@ String nombre=jTextField1.getText();
         ClientePOJO.setTelefono(telefono);
         ClientePOJO.setCelular(celular);
         ClientePOJO.setTipoCliente(tipocliente);
-        ClientePOJO.setUltimavisita(Date.valueOf(ultimavisita));
-        ClientePOJO.setProximavisita(Date.valueOf(proximavisita));
         ClienteJDBC clienteJDBC = new ClienteJDBC();
         int x = ClienteJDBC.insertar(ClientePOJO);
 

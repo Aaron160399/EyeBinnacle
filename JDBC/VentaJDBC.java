@@ -138,7 +138,7 @@ public class VentaJDBC {
             }
             rs.close();
         } catch (Exception e) {
-            System.out.println("Error al cargar la tabla " + e);
+            System.out.println("Error al cargar la tabla Venta " + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);

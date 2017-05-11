@@ -94,6 +94,8 @@ public class MenuSecretaria extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -232,8 +234,10 @@ public class MenuSecretaria extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel10.setText("Visita");
 
+        buttonGroup1.add(jRadioButton1);
         jRadioButton1.setText("Aseguradora");
 
+        buttonGroup1.add(jRadioButton2);
         jRadioButton2.setText("Empresa");
         jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -241,6 +245,7 @@ public class MenuSecretaria extends javax.swing.JFrame {
             }
         });
 
+        buttonGroup1.add(jRadioButton3);
         jRadioButton3.setText("Ninguno");
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -255,8 +260,10 @@ public class MenuSecretaria extends javax.swing.JFrame {
             }
         });
 
+        buttonGroup2.add(jRadioButton4);
         jRadioButton4.setText("a.m.");
 
+        buttonGroup2.add(jRadioButton5);
         jRadioButton5.setText("p.m.");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -411,7 +418,8 @@ public class MenuSecretaria extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        VerCita verCita = new VerCita(this, jButton2, this);
+        int id = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString());
+        VerCita verCita = new VerCita(this, jButton2, this, id);
         verCita.setVisible(true);
         JFrame ventanas[] = {this, verCita};
         jButton4.setEnabled(false);
@@ -443,9 +451,9 @@ public class MenuSecretaria extends javax.swing.JFrame {
             Logger.getLogger(MenuSecretaria.class.getName()).log(Level.SEVERE, null, ex);
         }
         String visita;
-        if (jButton1.isSelected()) {
+        if (jRadioButton1.isSelected()) {
             visita = "Aseguradora";
-        } else if (jButton2.isSelected()) {
+        } else if (jRadioButton2.isSelected()) {
             visita = "Empresa";
         } else {
             visita = "Ninguno";
@@ -461,6 +469,9 @@ public class MenuSecretaria extends javax.swing.JFrame {
         consultaPOJO.setVisita(visita);
         consultaPOJO.setAseguradora_empresa(aseguradora_empresa);
         consultaPOJO.setAsunto(asunto);
+        
+        System.out.println(consultaPOJO.getVisita()+"1");
+        System.out.println(consultaPOJO.getAseguradora_empresa()+"2");
         
         int x = ConsultaJDBC.insertar(consultaPOJO);
 
@@ -519,6 +530,8 @@ public class MenuSecretaria extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField apellido;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JTextField celular;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

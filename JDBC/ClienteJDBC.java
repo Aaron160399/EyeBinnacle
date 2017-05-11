@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ClienteJDBC {
         private static final String TABLE="Cliente";
-    private static final String SQL_INSERT="INSERT INTO "+TABLE+" (nombre, apellidos, telefono, celular, tipoCliente, ultimavisita, proximavisita) VALUES (?,?,?,?,?,?,?)";
+    private static final String SQL_INSERT="INSERT INTO "+TABLE+" (nombre, apellidos, telefono, celular, tipoCliente) VALUES (?,?,?,?,?)";
     private static final String SQL_QUERY="SELECT * FROM "+TABLE+ " WHERE idCliente = ?";
     private static final String SQL_QUERY_ALL = "Select * from " + TABLE;
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idCliente=?";
@@ -38,8 +38,6 @@ public class ClienteJDBC {
             st.setString(3, pojo.getTelefono());
             st.setString(4, pojo.getCelular());
             st.setString(5, pojo.getTipoCliente());
-            st.setDate(6, pojo.getUltimavisita());
-            st.setDate(7, pojo.getProximavisita());
             st.executeUpdate();
             while (rs.next()) {                
                 id = rs.getInt(1);
@@ -123,7 +121,7 @@ public class ClienteJDBC {
             }
             rs.close();
         } catch (Exception e) {
-            System.out.println("Error al cargar la tabla " + e);
+            System.out.println("Error al cargar la tabla Cliente " + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);
@@ -141,8 +139,7 @@ public class ClienteJDBC {
             while (rs.next()) {
                 //Aquí crea el objeto de tu propia tabla en la que buscas información
                 ClientePOJO pojo = new ClientePOJO(rs.getInt("idCliente"), rs.getString("nombre"), rs.getString("apellidos"), 
-                        rs.getString("telefono"), rs.getString("celular"), rs.getString("tipoCliente"), rs.getDate("ultimavisita"),
-                        rs.getDate("proximavisita"));
+                        rs.getString("telefono"), rs.getString("celular"), rs.getString("tipoCliente"));
                     completador.addItem(pojo);
             }
             rs.close();
@@ -185,8 +182,6 @@ public class ClienteJDBC {
             pojo.setTelefono(rs.getString("telefono"));
             pojo.setCelular(rs.getString("celular"));
             pojo.setTipoCliente(rs.getString("tipoCliente"));
-            pojo.setUltimavisita(rs.getDate("ultimavisita"));
-            pojo.setProximavisita(rs.getDate("proximavisita"));
         } catch (SQLException ex) {
             System.out.println("Error al inflar pojo " + ex);
         }

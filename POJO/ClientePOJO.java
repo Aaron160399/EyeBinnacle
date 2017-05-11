@@ -18,18 +18,14 @@ public class ClientePOJO {
     private String telefono;
     private String celular;
     private String tipoCliente;
-    private Date proximavisita;
-    private Date ultimavisita;
 
-    public ClientePOJO(int IdCliente, String nombre, String apellidos, String telefono, String celular, String tipoCliente, Date proximavisita, Date ultimavisita) {
+    public ClientePOJO(int IdCliente, String nombre, String apellidos, String telefono, String celular, String tipoCliente) {
         this.IdCliente = IdCliente;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.telefono = telefono;
         this.celular = celular;
         this.tipoCliente = tipoCliente;
-        this.proximavisita = proximavisita;
-        this.ultimavisita = ultimavisita;
     }
 
     public ClientePOJO() {
@@ -81,22 +77,6 @@ public class ClientePOJO {
 
     public void setTipoCliente(String tipoCliente) {
         this.tipoCliente = tipoCliente;
-    }
-
-    public Date getProximavisita() {
-        return proximavisita;
-    }
-
-    public void setProximavisita(Date proximavisita) {
-        this.proximavisita = proximavisita;
-    }
-
-    public Date getUltimavisita() {
-        return ultimavisita;
-    }
-
-    public void setUltimavisita(Date ultimavisita) {
-        this.ultimavisita = ultimavisita;
     }
 
     @Override

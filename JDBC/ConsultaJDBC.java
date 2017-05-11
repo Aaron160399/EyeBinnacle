@@ -29,8 +29,8 @@ public class ConsultaJDBC {
     private static final String TABLE="consulta";
     private static final String SQL_INSERT="INSERT INTO "+TABLE+" (Cliente_idCliente, Usuario_idUsuario, fecha, horaInicio, asunto,"
             + " estatus, visita, aseguradora_empresa) VALUES (?,?,?,?,?,?,?,?)";
-    private static final String SQL_QUERY="SELECT * FROM "+TABLE;
-    private static final String SQL_QUERY_ALL = "SELECT * FROM " + TABLE + " "
+    private static final String SQL_QUERY="SELECT * FROM "+TABLE + " WHERE idCita = ?";
+    private static final String SQL_QUERY_ALL = "SELECT * FROM " + TABLE+ " "
             + "WHERE fecha = '"+anho+"-"+mes+"-"+dia+"'";
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idCita=?";
     private static final String SQL_UPDATE="UPDATE "+TABLE+" SET Cliente_idCliente=?, Usuario_idUsuario=?, fecha=?, horaInicio=?, asunto=?, proximaVisita=?, estatus=?, resultado=? WHERE idCita=?";
@@ -107,6 +107,28 @@ public class ConsultaJDBC {
         }
         return true;
     }
+     
+     public static ConsultaPOJO consultar(String id) {
+        Connection con = null;
+        PreparedStatement st = null;
+        ConsultaPOJO pojo = new ConsultaPOJO();
+        try {
+            con = Conexion.getConnection();
+            st = con.prepareStatement(SQL_QUERY);
+            st.setString(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                pojo = inflaPOJO(rs);
+            }
+        } catch (Exception e) {
+            System.out.println("Error al consultar  " + e);
+        } finally {
+            Conexion.close(con);
+            Conexion.close(st);
+        }
+        return pojo;
+    }
+     
     public static DefaultTableModel cargarTabla() {
         Connection con = null;
         PreparedStatement st = null;
@@ -130,7 +152,7 @@ public class ConsultaJDBC {
             rs.close();
             System.out.println();
         } catch (Exception e) {
-            System.out.println("Error al cargar la tabla " + e);
+            System.out.println("Error al cargar la tabla Consulta" + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);
@@ -148,10 +170,12 @@ public class ConsultaJDBC {
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
             rs.last();
-            int nResult = rs.getRow();
+            System.out.println(rs.getString("Asunto"));
             ConsultaPOJO pojo = inflaPOJO(rs);
             SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");
-            java.util.Date fechaHoy = fecha.parse(Calendar.YEAR+"-"+Calendar.MONTH+"-"+Calendar.DAY_OF_MONTH);
+            Calendar calendar = Calendar.getInstance();
+            java.util.Date fechaHoy = fecha.parse(calendar.get(Calendar.YEAR)+"-"+calendar.get(Calendar.MONTH)+"-"
+                    +calendar.get(Calendar.DAY_OF_MONTH));
             if (pojo.getFecha().before(fechaHoy)) {
                 ultimaVisita = pojo.getFecha();
             } else if (pojo.getFecha().after(fechaHoy)) {
@@ -166,7 +190,7 @@ public class ConsultaJDBC {
             }
             rs.close();
         } catch (Exception e) {
-            System.out.println("Error al cargar la tabla " + e);
+            System.out.println("Error al obtener Ultima Visita" + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);
@@ -184,6 +208,10 @@ public class ConsultaJDBC {
             pojo.setFecha(rs.getDate("fecha"));
             pojo.setHoraInicio(rs.getTime("horaInicio"));
             pojo.setAsunto(rs.getString("Asunto"));
+            pojo.setVisita(rs.getString("Visita"));
+            pojo.setAseguradora_empresa(rs.getString("Aseguradora_empresa"));
+            pojo.setEstatus(rs.getString("Estatus"));
+            pojo.setResultado(rs.getString("Resultado"));
            
             
         } catch (SQLException ex) {

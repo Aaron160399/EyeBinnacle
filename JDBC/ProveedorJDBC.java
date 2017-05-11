@@ -118,7 +118,7 @@ public class ProveedorJDBC {
             }
             rs.close();
         } catch (Exception e) {
-            System.out.println("Error al cargar la tabla " + e);
+            System.out.println("Error al cargar la tabla Proveedor " + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);

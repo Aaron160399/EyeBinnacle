@@ -113,7 +113,7 @@ public static int insertar(UsuarioPOJO pojo) {
             }
             rs.close();
         } catch (Exception e) {
-            System.out.println("Error al cargar la tabla " + e);
+            System.out.println("Error al cargar la tabla Usuario " + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);

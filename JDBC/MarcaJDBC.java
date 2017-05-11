@@ -119,7 +119,7 @@ public class MarcaJDBC {
             }
             rs.close();
         } catch (Exception e) {
-            System.out.println("Error al cargar la tabla " + e);
+            System.out.println("Error al cargar la tabla Marca" + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);
