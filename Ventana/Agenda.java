@@ -24,6 +24,7 @@ public class Agenda extends javax.swing.JFrame {
     JFrame menuDoc;
     JButton botonPres;
     MenuDoctora menuDoctora;
+    int idCliente;
     /**
      * Creates new form Agenda
      */
@@ -57,7 +58,11 @@ public class Agenda extends javax.swing.JFrame {
         fecha.setText(consultaPOJO.getFecha()+"");
         hora.setText(consultaPOJO.getHoraInicio()+"");
         asunto.setText(consultaPOJO.getAsunto());
-        fechaUltima.setText(ConsultaJDBC.obtenerUltimaVisita(Integer.parseInt(id))+"");
+        ConsultaPOJO ultimaConsulta = ConsultaJDBC.obtenerUltimaVisita(consultaPOJO.getCliente_idCliente());
+        fechaUltima.setText(ultimaConsulta.getFecha()+"");
+        asuntoUltimo.setText(ultimaConsulta.getAsunto()+"");
+        idCliente = clientePOJO.getIdCliente();
+        diagnostico.setText(ConsultaJDBC.cargarExpediente(clientePOJO.getIdCliente()));
     }
     
     public void cargarTabla(){
@@ -100,12 +105,8 @@ public class Agenda extends javax.swing.JFrame {
         fecha = new javax.swing.JTextField();
         fechaUltima = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
         diagnostico = new javax.swing.JTextArea();
-        jLabel15 = new javax.swing.JLabel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        diagnosticoUltimo = new javax.swing.JTextArea();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -129,6 +130,11 @@ public class Agenda extends javax.swing.JFrame {
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable1MouseClicked(evt);
+            }
+        });
+        jTable1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTable1KeyReleased(evt);
             }
         });
         jScrollPane1.setViewportView(jTable1);
@@ -278,49 +284,28 @@ public class Agenda extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Diagnóstico", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 18))); // NOI18N
-
-        jLabel14.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel14.setText("Último");
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Expediente", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 18))); // NOI18N
 
         diagnostico.setColumns(20);
+        diagnostico.setLineWrap(true);
         diagnostico.setRows(5);
         jScrollPane7.setViewportView(diagnostico);
-
-        jLabel15.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel15.setText("Actual");
-
-        diagnosticoUltimo.setColumns(20);
-        diagnosticoUltimo.setRows(5);
-        jScrollPane5.setViewportView(diagnosticoUltimo);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel14)
-                    .addComponent(jLabel15))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
-                    .addComponent(jScrollPane5))
+                .addContainerGap()
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
                 .addGap(5, 5, 5))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel14))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel15)
-                        .addGap(68, 68, 68))
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -389,7 +374,7 @@ public class Agenda extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        Historial historial = new Historial(jButton2, this, menuDoc);
+        Historial historial = new Historial(jButton2, this, menuDoc, idCliente);
         historial.setVisible(true);
         JFrame ventanas[] = {menuDoc, this, historial};
         jButton2.setEnabled(false);
@@ -404,6 +389,14 @@ public class Agenda extends javax.swing.JFrame {
         String id = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
         cargaInformacion(id);
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jTable1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyReleased
+        // TODO add your handling code here:
+        if (evt.getKeyCode()==evt.VK_UP || evt.getKeyCode()==evt.VK_DOWN) {
+            String id = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+            cargaInformacion(id);
+        }
+    }//GEN-LAST:event_jTable1KeyReleased
 
     /**
      * @param args the command line arguments
@@ -446,7 +439,6 @@ public class Agenda extends javax.swing.JFrame {
     private javax.swing.JTextArea asuntoUltimo;
     private javax.swing.JTextField celular;
     private javax.swing.JTextArea diagnostico;
-    private javax.swing.JTextArea diagnosticoUltimo;
     private javax.swing.JTextField fecha;
     private javax.swing.JTextField fechaUltima;
     private javax.swing.JTextField hora;
@@ -454,8 +446,6 @@ public class Agenda extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -472,7 +462,6 @@ public class Agenda extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;

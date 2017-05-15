@@ -53,6 +53,7 @@ public class MenuSecretaria extends javax.swing.JFrame {
         jToolBar1.setFloatable(false);
         ClienteJDBC.cargarCompleter(nombres);
     }
+    
     public MenuSecretaria(UsuarioPOJO usuarioPOJO) {
         initComponents();
         getContentPane().setBackground(Color.WHITE);
@@ -74,6 +75,7 @@ public class MenuSecretaria extends javax.swing.JFrame {
         ClienteJDBC.cargarCompleter(nombres);
         usuarioPOJO2 = usuarioPOJO;
         cargarTabla();
+        jTextField2.setEditable(false);
     }
     
     public void cargarTabla(){
@@ -236,6 +238,11 @@ public class MenuSecretaria extends javax.swing.JFrame {
 
         buttonGroup1.add(jRadioButton1);
         jRadioButton1.setText("Aseguradora");
+        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton1ActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(jRadioButton2);
         jRadioButton2.setText("Empresa");
@@ -246,7 +253,12 @@ public class MenuSecretaria extends javax.swing.JFrame {
         });
 
         buttonGroup1.add(jRadioButton3);
-        jRadioButton3.setText("Ninguno");
+        jRadioButton3.setText("Particular");
+        jRadioButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton3ActionPerformed(evt);
+            }
+        });
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel11.setText("Aseguradora/Empresa");
@@ -430,6 +442,7 @@ public class MenuSecretaria extends javax.swing.JFrame {
 
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
         // TODO add your handling code here:
+        jTextField2.setEditable(true);
     }//GEN-LAST:event_jRadioButton2ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -492,6 +505,16 @@ public class MenuSecretaria extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+        // TODO add your handling code here:
+        jTextField2.setEditable(true);
+    }//GEN-LAST:event_jRadioButton1ActionPerformed
+
+    private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
+        // TODO add your handling code here:
+        jTextField2.setEditable(false);
+    }//GEN-LAST:event_jRadioButton3ActionPerformed
 
     /**
      * @param args the command line arguments

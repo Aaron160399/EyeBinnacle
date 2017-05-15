@@ -8,6 +8,7 @@ package Ventana;
 import JDBC.ClienteJDBC;
 import JDBC.ConsultaJDBC;
 import POJO.ClientePOJO;
+import POJO.ConsultaPOJO;
 import java.awt.Color;
 import java.sql.Date;
 import javax.swing.JButton;
@@ -66,6 +67,8 @@ public class Cliente extends javax.swing.JFrame {
         jTextField2.setText(clientePOJO.getApellidos());
         jTextField3.setText(clientePOJO.getTelefono());
         jTextField4.setText(clientePOJO.getCelular());
+        ConsultaPOJO ultimaConsulta = ConsultaJDBC.obtenerUltimaVisita(clientePOJO.getIdCliente());
+        jTextField5.setText(ultimaConsulta.getFecha()+"");
                       
         if (clientePOJO.getTipoCliente().equalsIgnoreCase("primera visita")) {
             jRadioButton1.setSelected(true);
@@ -107,9 +110,7 @@ public class Cliente extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(500, 692));
         setMinimumSize(new java.awt.Dimension(500, 692));
-        setPreferredSize(new java.awt.Dimension(500, 692));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -179,7 +180,7 @@ public class Cliente extends javax.swing.JFrame {
         getContentPane().add(jRadioButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 400, -1, -1));
 
         buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setText("Recurrente");
+        jRadioButton2.setText("Subsecuente");
         jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jRadioButton2ActionPerformed(evt);
@@ -219,38 +220,8 @@ public class Cliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-String nombre=jTextField1.getText();
-        String apellidos=jTextField2.getText();
-        String telefono=jTextField3.getText();
-        String celular=jTextField4.getText();
-        String ultimavisita=jTextField5.getText();
-        String proximavisita=jTextField6.getText();
-        ClientePOJO ClientePOJO=new ClientePOJO();
-       ClientePOJO.setNombre(nombre);
-        ClientePOJO.setApellidos(apellidos);
-        ClientePOJO.setTelefono(telefono);
-        ClientePOJO.setCelular(celular);
-        ClientePOJO.setTipoCliente(tipocliente);
-        ClienteJDBC clienteJDBC = new ClienteJDBC();
-        int x = ClienteJDBC.insertar(ClientePOJO);
-
-        if (x != 0) {
-            JOptionPane.showMessageDialog(null, "Guardado");
-            jTextField1.setText("");
-            jTextField2.setText("");
-            jTextField3.setText("");
-            jTextField4.setText("");
-           
-            jTextField5.setText("");
-            jTextField6.setText("");
-        } else {
-            JOptionPane.showMessageDialog(null, "CATASTROPHIC ERROR");
-        }
-        cargarTabla();
-        
-// TODO add your handling code here:
-        
-        Historial historial = new Historial(jButton2, this, menuDoc);
+        int id = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString());
+        Historial historial = new Historial(jButton2, this, menuDoc, id);
         historial.setVisible(true);
         JFrame ventanas[] = {menuDoc, this, historial};
         jButton2.setEnabled(false);

@@ -30,6 +30,7 @@ public class ConsultaJDBC {
     private static final String SQL_INSERT="INSERT INTO "+TABLE+" (Cliente_idCliente, Usuario_idUsuario, fecha, horaInicio, asunto,"
             + " estatus, visita, aseguradora_empresa) VALUES (?,?,?,?,?,?,?,?)";
     private static final String SQL_QUERY="SELECT * FROM "+TABLE + " WHERE idCita = ?";
+    private static final String SQL_QUERY_CLIENTE="SELECT * FROM "+TABLE + " WHERE Cliente_idCliente = ?";
     private static final String SQL_QUERY_ALL = "SELECT * FROM " + TABLE+ " "
             + "WHERE fecha = '"+anho+"-"+mes+"-"+dia+"'";
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idCita=?";
@@ -160,42 +161,110 @@ public class ConsultaJDBC {
         return dt;
     }
     
-    public static java.util.Date obtenerUltimaVisita(int id) {
+    public static DefaultTableModel cargarTablaCliente(int id) {
         Connection con = null;
         PreparedStatement st = null;
-        java.util.Date ultimaVisita = null;
+        DefaultTableModel dt = null;
+        String encabezados[] = {"Id","Fecha","Estatus"};
+        try {
+            con = Conexion.getConnection();
+            st = con.prepareStatement(SQL_QUERY_CLIENTE);
+            st.setInt(1, id);
+            dt = new DefaultTableModel();
+            dt.setColumnIdentifiers(encabezados);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Object ob[] = new Object[3];
+                ConsultaPOJO pojo = inflaPOJO(rs);
+                ob[0] = pojo.getIdCita();
+                ob[1] = pojo.getFecha();
+                ob[2] = pojo.getEstatus();
+                System.out.println(pojo.getEstatus());
+                dt.addRow(ob);
+            }
+            rs.close();
+            System.out.println();
+        } catch (Exception e) {
+            System.out.println("Error al cargar la tabla Consulta" + e);
+        } finally {
+            Conexion.close(con);
+            Conexion.close(st);
+        }
+        return dt;
+    }
+    
+    public static String cargarExpediente(int id) {
+        Connection con = null;
+        PreparedStatement st = null;
+        String expediente = "";
+        try {
+            con = Conexion.getConnection();
+            st = con.prepareStatement(SQL_QUERY_CLIENTE);
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                ConsultaPOJO pojo = inflaPOJO(rs);
+                if (pojo.getResultado() == null) {
+                    expediente += "";
+                } else {
+                    expediente += pojo.getResultado()+"\n";
+                }
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.out.println("Error al cargar el expediente" + e);
+        } finally {
+            Conexion.close(con);
+            Conexion.close(st);
+        }
+        return expediente;
+    }
+    
+    public static ConsultaPOJO obtenerUltimaVisita(int id) {
+        Connection con = null;
+        PreparedStatement st = null;
+        ConsultaPOJO pojo = null;
         try {
             con = Conexion.getConnection();
             st = con.prepareStatement("SELECT * FROM consulta WHERE Cliente_idCliente = ?");
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
             rs.last();
-            System.out.println(rs.getString("Asunto"));
-            ConsultaPOJO pojo = inflaPOJO(rs);
+            pojo = inflaPOJO(rs);
             SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");
             Calendar calendar = Calendar.getInstance();
-            java.util.Date fechaHoy = fecha.parse(calendar.get(Calendar.YEAR)+"-"+calendar.get(Calendar.MONTH)+"-"
-                    +calendar.get(Calendar.DAY_OF_MONTH));
-            if (pojo.getFecha().before(fechaHoy)) {
-                ultimaVisita = pojo.getFecha();
-            } else if (pojo.getFecha().after(fechaHoy)) {
+            
+            int mes = calendar.get(Calendar.MONTH)+1;
+            java.util.Date fechaHoy = fecha.parse(calendar.get(Calendar.YEAR)+"-"+mes+"-"+calendar.get(Calendar.DAY_OF_MONTH));
+            java.sql.Date fechaHoySql  = new java.sql.Date(fechaHoy.getTime());
+            
+            java.util.Date fechaPOJO = rs.getDate("fecha");
+            java.sql.Date fechaPOJOSql = new java.sql.Date(fechaPOJO.getTime());
+            
+            System.out.println("fecha Hoy "+fechaHoySql);
+            System.out.println("Fecha consulta"+fechaPOJOSql);
+            if (fechaPOJOSql.before(fechaHoySql)) {
+                pojo = inflaPOJO(rs);
+                System.out.println(pojo.getFecha());
+            } else if (fechaPOJOSql.after(fechaHoySql)||fechaPOJOSql.equals(fechaHoySql)) {
                 while (rs.previous()){
                     pojo = inflaPOJO(rs);
-                    ultimaVisita = pojo.getFecha();
-                    System.out.println(rs.getInt("idCita"));
-                    if (ultimaVisita.before(fechaHoy)) {
+                    fechaPOJO = rs.getDate("fecha");
+                    fechaPOJOSql = new java.sql.Date(fechaPOJO.getTime());
+                    System.out.println("SQL "+fechaHoySql);
+                    if (fechaPOJOSql.before(fechaHoy)) {
                         break;
                     }
                 }
             }
             rs.close();
         } catch (Exception e) {
-            System.out.println("Error al obtener Ultima Visita" + e);
+            System.out.println("Error al obtener Ultima Visita " + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);
         }
-        return ultimaVisita;
+        return pojo;
     }
     
     private static ConsultaPOJO inflaPOJO(ResultSet rs) {

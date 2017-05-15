@@ -5,10 +5,14 @@
  */
 package Ventana;
 
+import JDBC.ConsultaJDBC;
+import POJO.ConsultaPOJO;
 import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
+import javax.swing.JTable;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -24,7 +28,7 @@ public class Historial extends javax.swing.JFrame {
     public Historial() {
         initComponents();
     }
-    public Historial(JButton boton, JFrame padre, JFrame menu) {
+    public Historial(JButton boton, JFrame padre, JFrame menu, int idCliente) {
         setUndecorated(true);
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         setOpacity(0);
@@ -37,7 +41,50 @@ public class Historial extends javax.swing.JFrame {
         botonPres = boton;
         padre2 = padre;
         menu2 = menu;
+        cargarTabla(idCliente);
+//        obtenerTamanhoColumna("Hola");
     }
+    
+    public void cargarTabla(int id){
+        jTable1.setModel(ConsultaJDBC.cargarTablaCliente(id));
+        System.out.println(jTable1.getRowCount());
+        TableColumnModel tableColumnModel = jTable1.getColumnModel();
+        tableColumnModel.getColumn(0).setPreferredWidth(20);
+        tableColumnModel.getColumn(1).setPreferredWidth(80);
+        tableColumnModel.getColumn(2).setPreferredWidth(80);
+    }
+    
+    public void cargarInformacion(String id){
+        ConsultaPOJO consultaPOJO = ConsultaJDBC.consultar(id);
+        jTextField1.setText(consultaPOJO.getFecha()+"");
+        jTextField2.setText(consultaPOJO.getAsunto());
+        jTextField3.setText(consultaPOJO.getEstatus());
+        jTextArea1.setText(consultaPOJO.getResultado());
+    }
+    
+//    public int obtenerTamanhoColumna(JTable tabla, int columna){
+//        //Obtengo cuantos valores hay en la tabla
+//        int nValores = tabla.getRowCount();
+//        int tamanho = 0;
+//        int caracteres = 0;
+//        //Lleno mi arreglo con los valores que tiene la tabla en la columna en cuestión
+//        for (int i = 0; i < nValores; i++) {
+//            try {
+//                String valor = tabla.getValueAt(i, columna).toString();
+//                //Comparo valores buscando el más largo
+//                if (caracteres <= valor.length()) {
+//                    caracteres = valor.length();
+//                } else {
+//                    caracteres = caracteres;
+//                }
+//            } catch (Exception e) {
+//                System.out.println(e);
+//            }
+//        }
+//        tamanho = caracteres * 8;
+//        System.out.println(tamanho);
+//        return tamanho;
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -64,7 +111,6 @@ public class Historial extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(446, 692));
         setMinimumSize(new java.awt.Dimension(446, 692));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -79,6 +125,11 @@ public class Historial extends javax.swing.JFrame {
                 "Fecha", "Estado"
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 181, 200, 500));
@@ -137,6 +188,12 @@ public class Historial extends javax.swing.JFrame {
         botonPres.setEnabled(true);
         funciones.Desaparecer(this, ventanas);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        String id = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+        cargarInformacion(id);
+    }//GEN-LAST:event_jTable1MouseClicked
 
     /**
      * @param args the command line arguments
