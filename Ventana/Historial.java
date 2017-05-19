@@ -130,6 +130,11 @@ public class Historial extends javax.swing.JFrame {
                 jTable1MouseClicked(evt);
             }
         });
+        jTable1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTable1KeyReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 181, 200, 500));
@@ -194,6 +199,14 @@ public class Historial extends javax.swing.JFrame {
         String id = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
         cargarInformacion(id);
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jTable1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyReleased
+        // TODO add your handling code here:
+        if (evt.getKeyCode()==evt.VK_UP || evt.getKeyCode()==evt.VK_DOWN) {
+            String id = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+            cargarInformacion(id);
+        }
+    }//GEN-LAST:event_jTable1KeyReleased
 
     /**
      * @param args the command line arguments

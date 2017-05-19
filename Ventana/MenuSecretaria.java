@@ -74,7 +74,6 @@ public class MenuSecretaria extends javax.swing.JFrame {
         jToolBar1.setFloatable(false);
         ClienteJDBC.cargarCompleter(nombres);
         usuarioPOJO2 = usuarioPOJO;
-        cargarTabla();
         jTextField2.setEditable(false);
     }
     
@@ -85,6 +84,94 @@ public class MenuSecretaria extends javax.swing.JFrame {
     public void activar(){
         jButton4.setEnabled(true);
         jTable1.setEnabled(true);
+    }
+    
+    public void insertarCita(int idCliente, boolean subsecuente){
+        int idUsuario = usuarioPOJO2.getIdUsuario();
+        Date fecha = jDateChooser1.getDate();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
+        java.sql.Time horaInicio = null;
+        try {
+            java.util.Date hora = null;
+            if (jRadioButton4.isSelected()) {
+                hora = (java.util.Date)simpleDateFormat.parse(jTextField1.getText()+" am");
+            } else if (jRadioButton5.isSelected()) {
+                hora = (java.util.Date)simpleDateFormat.parse(jTextField1.getText()+" pm");
+            }
+            horaInicio = new java.sql.Time(hora.getTime());
+        } catch (ParseException ex) {
+            Logger.getLogger(MenuSecretaria.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String visita = null;
+        if (jRadioButton1.isSelected()) {
+            visita = "aseguradora";
+        } else if (jRadioButton2.isSelected()) {
+            visita = "empresa";
+        } else if (jRadioButton3.isSelected()){
+            visita = "nunguno";
+        }
+        
+        if (subsecuente == true) {
+            ClientePOJO clientePOJO1 = new ClientePOJO();
+            clientePOJO1.setTipoCliente("recurrente");
+            clientePOJO1.setIdCliente(idCliente);
+            if (ClienteJDBC.actualizar(clientePOJO1) == true) {
+                System.out.println("Cliente actualizado con éxito");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error en la actualizaciíón");
+            }
+        }
+        
+        String aseguradora_empresa = jTextField2.getText();
+        String asunto = jTextArea1.getText();
+        
+        ConsultaPOJO consultaPOJO = new ConsultaPOJO();
+        consultaPOJO.setCliente_idCliente(idCliente);
+        consultaPOJO.setUsuario_idUsuario(idUsuario);
+        consultaPOJO.setFecha(fecha);
+        consultaPOJO.setHoraInicio(horaInicio);
+        consultaPOJO.setEstatus("Sin comenzar");
+        consultaPOJO.setVisita(visita);
+        consultaPOJO.setAseguradora_empresa(aseguradora_empresa);
+        consultaPOJO.setAsunto(asunto);
+        
+        int x = ConsultaJDBC.insertar(consultaPOJO);
+
+        if (x != 0) {
+            JOptionPane.showMessageDialog(null, "Guardado");
+            cargarTabla();
+            nombre.setText(null);
+            apellido.setText(null);
+            telefono.setText(null);
+            celular.setText(null);
+            jDateChooser1.setDate(null);
+            jRadioButton3.setSelected(true);
+            jTextArea1.setText(null);
+            jTextField1.setText(null);
+            jTextField2.setText(null);
+        } else {
+            JOptionPane.showMessageDialog(null, "CATASTROPHIC ERROR");
+        }
+    }
+    
+    public void insertarCliente(){
+        ClientePOJO clientePOJO = new ClientePOJO();
+        clientePOJO.setNombre(nombre.getText());
+        clientePOJO.setApellidos(apellido.getText());
+        clientePOJO.setTelefono(telefono.getText());
+        clientePOJO.setCelular(celular.getText());
+        clientePOJO.setTipoCliente("primera visita");
+        
+        int x = ClienteJDBC.insertar(clientePOJO);
+
+        if (x != 0) {
+            System.out.println("Cliente guardado");
+            int id = ClienteJDBC.obtenerRecienInsertado();
+            System.out.println(id);
+            insertarCita(id, false);
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al ingresar cliente");
+        }
     }
 
     /**
@@ -130,6 +217,8 @@ public class MenuSecretaria extends javax.swing.JFrame {
         jButton5 = new javax.swing.JButton();
         jRadioButton4 = new javax.swing.JRadioButton();
         jRadioButton5 = new javax.swing.JRadioButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jLabel2 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -278,6 +367,10 @@ public class MenuSecretaria extends javax.swing.JFrame {
         buttonGroup2.add(jRadioButton5);
         jRadioButton5.setText("p.m.");
 
+        jCheckBox1.setText("Primera visita");
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/info.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -293,14 +386,6 @@ public class MenuSecretaria extends javax.swing.JFrame {
                         .addComponent(jLabel5)
                         .addGap(18, 18, 18)
                         .addComponent(telefono))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(apellido, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
@@ -327,15 +412,31 @@ public class MenuSecretaria extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jRadioButton4)
-                                    .addComponent(jRadioButton5)))))))
+                                    .addComponent(jRadioButton5)))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel2)
+                                .addGap(6, 6, 6)
+                                .addComponent(jCheckBox1))
+                            .addComponent(apellido)))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBox1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -380,7 +481,7 @@ public class MenuSecretaria extends javax.swing.JFrame {
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton5))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -447,63 +548,11 @@ public class MenuSecretaria extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        int idCliente = clientePOJO.getIdCliente();
-        int idUsuario = usuarioPOJO2.getIdUsuario();
-        Date fecha = jDateChooser1.getDate();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
-        java.sql.Time horaInicio = null;
-        try {
-            java.util.Date hora = null;
-            if (jRadioButton4.isSelected()) {
-                hora = (java.util.Date)simpleDateFormat.parse(jTextField1.getText()+" am");
-            } else if (jRadioButton5.isSelected()) {
-                hora = (java.util.Date)simpleDateFormat.parse(jTextField1.getText()+" pm");
-            }
-            horaInicio = new java.sql.Time(hora.getTime());
-        } catch (ParseException ex) {
-            Logger.getLogger(MenuSecretaria.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        String visita;
-        if (jRadioButton1.isSelected()) {
-            visita = "Aseguradora";
-        } else if (jRadioButton2.isSelected()) {
-            visita = "Empresa";
+        if (jCheckBox1.isSelected()) {
+            insertarCliente();
         } else {
-            visita = "Ninguno";
+            insertarCita(clientePOJO.getIdCliente(), true);
         }
-        String aseguradora_empresa = jTextField2.getText();
-        String asunto = jTextArea1.getText();
-        
-        ConsultaPOJO consultaPOJO = new ConsultaPOJO();
-        consultaPOJO.setCliente_idCliente(idCliente);
-        consultaPOJO.setUsuario_idUsuario(idUsuario);
-        consultaPOJO.setFecha(fecha);
-        consultaPOJO.setHoraInicio(horaInicio);
-        consultaPOJO.setVisita(visita);
-        consultaPOJO.setAseguradora_empresa(aseguradora_empresa);
-        consultaPOJO.setAsunto(asunto);
-        
-        System.out.println(consultaPOJO.getVisita()+"1");
-        System.out.println(consultaPOJO.getAseguradora_empresa()+"2");
-        
-        int x = ConsultaJDBC.insertar(consultaPOJO);
-
-        if (x != 0) {
-            JOptionPane.showMessageDialog(null, "Guardado");
-            cargarTabla();
-            nombre.setText(null);
-            apellido.setText(null);
-            telefono.setText(null);
-            celular.setText(null);
-            jDateChooser1.setDate(null);
-            jRadioButton3.setSelected(true);
-            jTextArea1.setText(null);
-            jTextField1.setText(null);
-            jTextField2.setText(null);
-        } else {
-            JOptionPane.showMessageDialog(null, "CATASTROPHIC ERROR");
-        }
-        
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
@@ -561,10 +610,12 @@ public class MenuSecretaria extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JCheckBox jCheckBox1;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

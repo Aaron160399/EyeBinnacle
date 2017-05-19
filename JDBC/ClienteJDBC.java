@@ -23,13 +23,12 @@ public class ClienteJDBC {
     private static final String SQL_QUERY="SELECT * FROM "+TABLE+ " WHERE idCliente = ?";
     private static final String SQL_QUERY_ALL = "Select * from " + TABLE;
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idCliente=?";
-    private static final String SQL_UPDATE="UPDATE "+TABLE+" SET nombre=?, apellidos=?, telefono=?, celular=?, tipoCliente=?, ultimavisita=?, proximavisita=?  WHERE idCliente=?";
+    private static final String SQL_UPDATE="UPDATE "+TABLE+" SET tipoCliente=? WHERE idCliente=?";
    
     public static int insertar(ClientePOJO pojo) {
         Connection con = null;
         PreparedStatement st = null;
         int id = 0;
-        ResultSet rs = null;
         try {
             con = Conexion.getConnection();
             st = con.prepareStatement(SQL_INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -38,19 +37,39 @@ public class ClienteJDBC {
             st.setString(3, pojo.getTelefono());
             st.setString(4, pojo.getCelular());
             st.setString(5, pojo.getTipoCliente());
-            st.executeUpdate();
-            while (rs.next()) {                
-                id = rs.getInt(1);
-            }
+            id = st.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Error al insertar Cliente" + e);
+        } finally {
+            Conexion.close(con);
+            Conexion.close(st);
+        }
+        return id;
+    }
+    
+    public static int obtenerRecienInsertado() {
+        Connection con = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        int id = 0;
+        try {
+            con = Conexion.getConnection();
+            st = con.prepareStatement("SELECT * FROM cliente");
+            rs = st.executeQuery();
+            rs.last();
+            ClientePOJO clientePOJO = new ClientePOJO();
+            clientePOJO = inflaPOJO(rs);
+            id = clientePOJO.getIdCliente();
+            System.out.println(id);
         } catch (Exception e) {
             System.out.println("Error al insertar " + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);
-            Conexion.close(rs);
         }
         return id;
     }
+    
     public static boolean eliminar(String id) {
         Connection con = null;
         PreparedStatement st = null;
@@ -71,27 +90,22 @@ public class ClienteJDBC {
         }
         return true;
     }
+    
      public static boolean actualizar(ClientePOJO pojo) {
-
         Connection con = null;
         PreparedStatement st = null;
         try {
             con = Conexion.getConnection();
             //Recuerden que el últmo es el id
             st = con.prepareStatement(SQL_UPDATE);
-           
-            st.setString(1, pojo.getNombre());
-            st.setString(2, pojo.getApellidos());
-            st.setString(3, pojo.getTelefono());
-            st.setString(4, pojo.getCelular());
-           st.setInt(5, pojo.getIdCliente());
+            st.setString(1, pojo.getTipoCliente());
+            st.setInt(2, pojo.getIdCliente());
             int x = st.executeUpdate();
-
             if (x == 0) {
                 return false;
             }
         } catch (Exception e) {
-            System.out.println("Error al actualizar " + e);
+            System.out.println("Error al actualizar Cliente" + e);
             return false;
         } finally {
             Conexion.close(con);
@@ -99,6 +113,7 @@ public class ClienteJDBC {
         }
         return true;
     }
+     
     public static DefaultTableModel cargarTabla() {
         Connection con = null;
         PreparedStatement st = null;

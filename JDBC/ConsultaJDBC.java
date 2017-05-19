@@ -29,12 +29,13 @@ public class ConsultaJDBC {
     private static final String TABLE="consulta";
     private static final String SQL_INSERT="INSERT INTO "+TABLE+" (Cliente_idCliente, Usuario_idUsuario, fecha, horaInicio, asunto,"
             + " estatus, visita, aseguradora_empresa) VALUES (?,?,?,?,?,?,?,?)";
-    private static final String SQL_QUERY="SELECT * FROM "+TABLE + " WHERE idCita = ?";
+    private static final String SQL_QUERY="SELECT * FROM "+TABLE + " WHERE idCoonsulta = ?";
     private static final String SQL_QUERY_CLIENTE="SELECT * FROM "+TABLE + " WHERE Cliente_idCliente = ?";
     private static final String SQL_QUERY_ALL = "SELECT * FROM " + TABLE+ " "
             + "WHERE fecha = '"+anho+"-"+mes+"-"+dia+"'";
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idCita=?";
-    private static final String SQL_UPDATE="UPDATE "+TABLE+" SET Cliente_idCliente=?, Usuario_idUsuario=?, fecha=?, horaInicio=?, asunto=?, proximaVisita=?, estatus=?, resultado=? WHERE idCita=?";
+    private static final String SQL_UPDATE="UPDATE "+TABLE+" SET Cliente_idCliente=?, fecha=?, horaInicio=?, asunto=?, "
+            + "estatus=?, resultado=?, visita=?, aseguradora_empresa=? WHERE idCoonsulta=?";
     
     public static int insertar(ConsultaPOJO pojo) {
         Connection con = null;
@@ -55,7 +56,7 @@ public class ConsultaJDBC {
             st.setString(8, pojo.getAseguradora_empresa());
             id = st.executeUpdate();
         } catch (Exception e) {
-            System.out.println("Error al insertar " + e);
+            System.out.println("Error al insertar Cita" + e);
         } finally {
             Conexion.close(con);
             Conexion.close(st);
@@ -63,6 +64,7 @@ public class ConsultaJDBC {
         }
         return id;
     }
+    
     public static boolean eliminar(String id) {
         Connection con = null;
         PreparedStatement st = null;
@@ -83,31 +85,63 @@ public class ConsultaJDBC {
         }
         return true;
     }
-     public static boolean actualizar(ConsultaPOJO pojo) {
+    
+    public static boolean actualizar(ConsultaPOJO pojo) {
+       Connection con = null;
+       PreparedStatement st = null;
+       try {
+           con = Conexion.getConnection();
+           //Recuerden que el últmo es el id
+           st = con.prepareStatement(SQL_UPDATE);
+           java.sql.Date fecha = new java.sql.Date(pojo.getFecha().getTime());
+           st.setInt(1, pojo.getCliente_idCliente());
+           st.setDate(2, fecha);
+           st.setTime(3, pojo.getHoraInicio());
+           st.setString(4, pojo.getAsunto());
+           st.setString(5, pojo.getEstatus());
+           st.setString(6, pojo.getResultado());
+           st.setString(7, pojo.getVisita());
+           st.setString(8, pojo.getAseguradora_empresa());
+           st.setInt(9, pojo.getIdCita());
 
-        Connection con = null;
-        PreparedStatement st = null;
-        try {
-            con = Conexion.getConnection();
-            //Recuerden que el últmo es el id
-            st = con.prepareStatement(SQL_UPDATE);
-            st.setInt(1, pojo.getCliente_idCliente());
-            st.setInt(2, pojo.getUsuario_idUsuario());
-           
-            int x = st.executeUpdate();
+           int x = st.executeUpdate();
 
-            if (x == 0) {
-                return false;
-            }
-        } catch (Exception e) {
-            System.out.println("Error al actualizar " + e);
-            return false;
-        } finally {
-            Conexion.close(con);
-            Conexion.close(st);
-        }
-        return true;
-    }
+           if (x == 0) {
+               return false;
+           }
+       } catch (Exception e) {
+           System.out.println("Error al actualizar " + e);
+           return false;
+       } finally {
+           Conexion.close(con);
+           Conexion.close(st);
+       }
+       return true;
+   }
+    public static boolean actualizar2(ConsultaPOJO pojo) {
+       Connection con = null;
+       PreparedStatement st = null;
+       try {
+           con = Conexion.getConnection();
+           //Recuerden que el últmo es el id
+           st = con.prepareStatement("UPDATE "+TABLE+" SET resultado=? WHERE idCoonsulta=?");
+           st.setString(1, pojo.getResultado());
+           st.setInt(2, pojo.getIdCita());
+
+           int x = st.executeUpdate();
+
+           if (x == 0) {
+               return false;
+           }
+       } catch (Exception e) {
+           System.out.println("Error al actualizar " + e);
+           return false;
+       } finally {
+           Conexion.close(con);
+           Conexion.close(st);
+       }
+       return true;
+   }
      
      public static ConsultaPOJO consultar(String id) {
         Connection con = null;
@@ -271,7 +305,7 @@ public class ConsultaJDBC {
 
        ConsultaPOJO pojo = new ConsultaPOJO();
         try {
-            pojo.setIdCita(rs.getInt("idCita"));
+            pojo.setIdCita(rs.getInt("idCoonsulta"));
             pojo.setCliente_idCliente(rs.getInt("Cliente_idCliente"));
             pojo.setUsuario_idUsuario(rs.getInt("Usuario_idUsuario"));
             pojo.setFecha(rs.getDate("fecha"));

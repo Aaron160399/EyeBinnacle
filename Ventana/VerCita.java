@@ -14,13 +14,19 @@ import ch.randelshofer.quaqua.QuaquaLookAndFeel15;
 import ch.randelshofer.quaqua.jaguar.Quaqua15JaguarLookAndFeel;
 import ch.randelshofer.quaqua.leopard.Quaqua15LeopardCrossPlatformLookAndFeel;
 import ch.randelshofer.quaqua.tiger.Quaqua15TigerLookAndFeel;
+import com.mxrck.autocompleter.AutoCompleterCallback;
+import com.mxrck.autocompleter.TextAutoCompleter;
 import java.awt.Color;
 import java.awt.Toolkit;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
+import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -33,6 +39,9 @@ public class VerCita extends javax.swing.JFrame {
     JButton botonPres;
     MenuSecretaria menuSecretaria;
     int id2;
+    TextAutoCompleter nombres;
+    ClientePOJO clientePOJO;
+    ConsultaPOJO consultaPOJO;
     /**
      * Creates new form VerCita
      */
@@ -54,24 +63,89 @@ public class VerCita extends javax.swing.JFrame {
         botonPres = boton;
         menuSecretaria = menuSecretaria2;
         jToolBar1.setFloatable(false);
-        
         id2 = id;
         cargarInformacion();
+        
+        nombres = new TextAutoCompleter(nombre, new AutoCompleterCallback() {
+            @Override
+            public void callback(Object o) {
+                Object a = nombres.findItem(o);
+                clientePOJO = (ClientePOJO) a;
+                nombre.setText(clientePOJO.getNombre());
+                apellido.setText(clientePOJO.getApellidos());
+                telefono.setText(clientePOJO.getTelefono());
+                celular.setText(clientePOJO.getCelular());
+            }
+        });
+        ClienteJDBC.cargarCompleter(nombres);
+        jCheckBoxMenuItem1.setSelected(false);
+        jCheckBoxMenuItem2.setSelected(false);
+        jCheckBoxMenuItem3.setSelected(false);
+        jCheckBoxMenuItem4.setSelected(false);
+        jCheckBoxMenuItem5.setSelected(false);
     }
     
     public void cargarInformacion(){
-        ConsultaPOJO consultaPOJO = ConsultaJDBC.consultar(String.valueOf(id2));
+        consultaPOJO = ConsultaJDBC.consultar(String.valueOf(id2));
         ClientePOJO clientePOJO = ClienteJDBC.consultar(String.valueOf(consultaPOJO.getCliente_idCliente()));
         nombre.setText(clientePOJO.getNombre());
         apellido.setText(clientePOJO.getApellidos());
         telefono.setText(clientePOJO.getTelefono());
         celular.setText(clientePOJO.getCelular());
         celular.setText(clientePOJO.getCelular());
-        jTextField4.setText(consultaPOJO.getFecha()+"");
+        jDateChooser1.setDate(consultaPOJO.getFecha());
         jTextField1.setText(consultaPOJO.getHoraInicio()+"");
         jTextField3.setText(consultaPOJO.getVisita());
         jTextField2.setText(consultaPOJO.getAseguradora_empresa());
         jTextArea1.setText(consultaPOJO.getAsunto());
+        if (consultaPOJO.getEstatus().equalsIgnoreCase("Sin comenzar")) {
+            jComboBox1.setSelectedIndex(0);
+        } else if (consultaPOJO.getEstatus().equalsIgnoreCase("Por comenzar")) {
+            jComboBox1.setSelectedIndex(1);
+        } else if (consultaPOJO.getEstatus().equalsIgnoreCase("En curso")) {
+            jComboBox1.setSelectedIndex(2);
+        } else if (consultaPOJO.getEstatus().equalsIgnoreCase("Finalizada")) {
+            jComboBox1.setSelectedIndex(3);
+        } else if (consultaPOJO.getEstatus().equalsIgnoreCase("Cancelada")) {
+            jComboBox1.setSelectedIndex(4);
+        }
+    }
+    
+    public void cargarInformacionAEditar(){
+        consultaPOJO.setIdCita(id2);
+        
+        if (jCheckBoxMenuItem1.isSelected()) {
+            consultaPOJO.setCliente_idCliente(clientePOJO.getIdCliente());
+        } else {
+            consultaPOJO.setCliente_idCliente(consultaPOJO.getCliente_idCliente());
+        }
+        
+        if (jCheckBoxMenuItem2.isSelected()) {
+            consultaPOJO.setFecha(jDateChooser1.getDate());
+        } else {
+            consultaPOJO.setFecha(consultaPOJO.getFecha());
+        }
+        
+        if (jCheckBoxMenuItem3.isSelected()) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
+            java.sql.Time horaInicio = null;
+            java.util.Date hora = null;
+
+            try {
+                hora = (java.util.Date)simpleDateFormat.parse(jTextField1.getText());
+            } catch (ParseException ex) {
+                Logger.getLogger(VerCita.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            horaInicio = new java.sql.Time(hora.getTime());
+            consultaPOJO.setHoraInicio(horaInicio);
+        } else {
+            consultaPOJO.setHoraInicio(consultaPOJO.getHoraInicio());
+        }
+        
+        consultaPOJO.setAsunto(jTextArea1.getText());
+        consultaPOJO.setEstatus(jComboBox1.getSelectedItem().toString());
+        consultaPOJO.setVisita(jTextField3.getText());
+        consultaPOJO.setAseguradora_empresa(jTextField2.getText());
     }
 
     /**
@@ -102,13 +176,20 @@ public class VerCita extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
         jButton2 = new javax.swing.JButton();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu2 = new javax.swing.JMenu();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItem2 = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItem3 = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItem4 = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItem5 = new javax.swing.JCheckBoxMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(376, 600));
@@ -137,12 +218,22 @@ public class VerCita extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel9.setText("Asunto");
 
+        nombre.setEditable(false);
+
+        apellido.setEditable(false);
+
+        telefono.setEditable(false);
+
+        celular.setEditable(false);
         celular.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 celularActionPerformed(evt);
             }
         });
 
+        jTextField1.setEditable(false);
+
+        jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
@@ -153,14 +244,23 @@ public class VerCita extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel11.setText("Aseguradora/Empresa");
 
+        jTextField2.setEditable(false);
+
+        jTextField3.setEditable(false);
+
         jLabel12.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel12.setText("Estatus");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Sin comenzar", "Por comenzar", "En curo", "Finalizada", "No asistido" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Sin comenzar", "Por comenzar", "En curso", "Finalizada", "Cancelada" }));
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/guardar.png"))); // NOI18N
         jButton2.setBorderPainted(false);
         jButton2.setContentAreaFilled(false);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -197,7 +297,7 @@ public class VerCita extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel8)
                         .addGap(18, 18, 18)
@@ -236,14 +336,15 @@ public class VerCita extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(celular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel7)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel7)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(2, 2, 2)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
@@ -285,6 +386,57 @@ public class VerCita extends javax.swing.JFrame {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/fondoVerCita.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, -1, -1));
 
+        jMenu2.setText("Editar");
+
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("Cliente");
+        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jCheckBoxMenuItem1);
+
+        jCheckBoxMenuItem2.setSelected(true);
+        jCheckBoxMenuItem2.setText("Fecha");
+        jCheckBoxMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jCheckBoxMenuItem2);
+
+        jCheckBoxMenuItem3.setSelected(true);
+        jCheckBoxMenuItem3.setText("Hora");
+        jCheckBoxMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jCheckBoxMenuItem3);
+
+        jCheckBoxMenuItem4.setSelected(true);
+        jCheckBoxMenuItem4.setText("Tipo de visita");
+        jCheckBoxMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jCheckBoxMenuItem4);
+
+        jCheckBoxMenuItem5.setSelected(true);
+        jCheckBoxMenuItem5.setText("Asunto");
+        jCheckBoxMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jCheckBoxMenuItem5);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -298,6 +450,67 @@ public class VerCita extends javax.swing.JFrame {
         funciones.Desaparecer(this,menuSecre);
         menuSecretaria.activar();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        cargarInformacionAEditar();        
+        if (ConsultaJDBC.actualizar(consultaPOJO) == true) {
+                JOptionPane.showMessageDialog(null, "Actualización exitosa");
+                menuSecretaria.cargarTabla();
+            } else {
+                System.out.println("Cita no actualizada");
+            }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        if (jCheckBoxMenuItem1.isSelected()) {
+            nombre.setEditable(true);
+        } else if (jCheckBoxMenuItem1.isSelected() == false){
+            nombre.setEditable(false);
+        }
+    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
+
+    private void jCheckBoxMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxMenuItem2ActionPerformed
+
+    private void jCheckBoxMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem3ActionPerformed
+        // TODO add your handling code here:
+        if (jCheckBoxMenuItem3.isSelected()) {
+            jTextField1.setEditable(true);
+            jTextField1.setText(null);
+        } else if (jCheckBoxMenuItem3.isSelected() == false){
+            jTextField1.setEditable(false);
+            jTextField1.setText(consultaPOJO.getHoraInicio()+"");
+        }
+    }//GEN-LAST:event_jCheckBoxMenuItem3ActionPerformed
+
+    private void jCheckBoxMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem4ActionPerformed
+        // TODO add your handling code here:
+        if (jCheckBoxMenuItem4.isSelected()) {
+            jTextField3.setEditable(true);
+            jTextField2.setEditable(true);
+            jTextField3.setText(null);
+            jTextField2.setText(null);
+        } else if (jCheckBoxMenuItem4.isSelected() == false){
+            jTextField3.setEditable(false);
+            jTextField2.setEditable(false);
+            jTextField3.setText(consultaPOJO.getVisita());
+            jTextField2.setText(consultaPOJO.getAseguradora_empresa());
+        }
+    }//GEN-LAST:event_jCheckBoxMenuItem4ActionPerformed
+
+    private void jCheckBoxMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem5ActionPerformed
+        // TODO add your handling code here:
+        if (jCheckBoxMenuItem5.isSelected()) {
+            jTextArea1.setEditable(true);
+            jTextArea1.setText(null);
+        } else {
+            jTextArea1.setEditable(false);
+            jTextArea1.setText(consultaPOJO.getAsunto());
+        }
+    }//GEN-LAST:event_jCheckBoxMenuItem5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -345,7 +558,13 @@ public class VerCita extends javax.swing.JFrame {
     private javax.swing.JTextField celular;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem2;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem3;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem4;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem5;
     private javax.swing.JComboBox jComboBox1;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -357,13 +576,14 @@ public class VerCita extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTextField nombre;
     private javax.swing.JTextField telefono;

@@ -236,6 +236,7 @@ public class AgregarProducto extends javax.swing.JFrame {
         productoPOJO.setNumeroIdentificacion(numeroIdentificacion);
         productoPOJO.setCaracteristica(caracteristica);
         productoPOJO.setPrecioventa(precioVenta);
+        productoPOJO.setExistente(true);
         
         int x = ProductoJDBC.insertar(productoPOJO);
 

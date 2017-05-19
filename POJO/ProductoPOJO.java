@@ -16,6 +16,7 @@ public class ProductoPOJO {
     private String numeroIdentificacion;
     private String caracteristica;
     private double precioventa;
+    private boolean existente;
 
     public int getIdProducto() {
         return idProducto;
@@ -63,6 +64,14 @@ public class ProductoPOJO {
 
     public void setPrecioventa(double precioventa) {
         this.precioventa = precioventa;
+    }
+
+    public boolean isExistente() {
+        return existente;
+    }
+
+    public void setExistente(boolean existente) {
+        this.existente = existente;
     }
     
    
