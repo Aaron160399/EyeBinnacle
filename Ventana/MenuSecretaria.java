@@ -7,6 +7,7 @@ package Ventana;
 
 import JDBC.ClienteJDBC;
 import JDBC.ConsultaJDBC;
+import JDBC.VentaJDBC;
 import POJO.ClientePOJO;
 import POJO.ConsultaPOJO;
 import POJO.UsuarioPOJO;
@@ -21,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -30,6 +32,7 @@ public class MenuSecretaria extends javax.swing.JFrame {
     TextAutoCompleter nombres;
     ClientePOJO clientePOJO;
     UsuarioPOJO usuarioPOJO2;
+    int seleccion;
     /**
      * Creates new form MenuSecretaria
      */
@@ -79,6 +82,15 @@ public class MenuSecretaria extends javax.swing.JFrame {
     
     public void cargarTabla(){
         jTable1.setModel(ConsultaJDBC.cargarTabla());
+        TableColumnModel tableColumnModel = jTable1.getColumnModel();
+        tableColumnModel.getColumn(1).setPreferredWidth(200);
+        tableColumnModel.getColumn(2).setPreferredWidth(70);
+        colorearTabla();
+    }
+    
+    public void colorearTabla(){
+        ColorFilas colorFilas = new ColorFilas();
+        jTable1.setDefaultRenderer(Object.class, colorFilas);
     }
     
     public void activar(){
@@ -166,6 +178,8 @@ public class MenuSecretaria extends javax.swing.JFrame {
 
         if (x != 0) {
             System.out.println("Cliente guardado");
+            nombres.removeAllItems();
+            ClienteJDBC.cargarCompleter(nombres);
             int id = ClienteJDBC.obtenerRecienInsertado();
             System.out.println(id);
             insertarCita(id, false);
@@ -485,7 +499,7 @@ public class MenuSecretaria extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 150, -1, 437));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 150, -1, 437));
 
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/fondoNuevaCita.png"))); // NOI18N
         getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 690, 560));
@@ -502,12 +516,25 @@ public class MenuSecretaria extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        Ventas ventas = new Ventas(this, jButton2, this);
-        ventas.setVisible(true);
-        JFrame ventanas[] = {this, ventas};
-        jButton4.setEnabled(false);
-        Funciones funciones = new Funciones();
-        funciones.CalcularPosicion(ventanas, 1);
+        seleccion = jTable1.getSelectedRow();
+        System.out.println(seleccion);
+        if (seleccion >= 0) {
+            String id = jTable1.getValueAt(seleccion, 0).toString();
+            System.out.println(id);
+            Ventas ventas = new Ventas(this, jButton2, this, id, usuarioPOJO2);
+            ventas.setVisible(true);
+            JFrame ventanas[] = {this, ventas};
+            jButton4.setEnabled(false);
+            Funciones funciones = new Funciones();
+            funciones.CalcularPosicion(ventanas, 1);
+        } else {
+            Ventas ventas = new Ventas(this, jButton2, this, usuarioPOJO2);
+            ventas.setVisible(true);
+            JFrame ventanas[] = {this, ventas};
+            jButton4.setEnabled(false);
+            Funciones funciones = new Funciones();
+            funciones.CalcularPosicion(ventanas, 1);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -522,6 +549,7 @@ public class MenuSecretaria extends javax.swing.JFrame {
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
+        seleccion = jTable1.getSelectedRow();
         if(jTable1.getSelectedRow() != -1 && jTable1.isEnabled()==true){
             jButton4.setEnabled(true);
         } else {

@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
 /**
@@ -56,6 +57,9 @@ public class Proveedores extends javax.swing.JFrame {
         botonPres = boton;
         menuDoctora = menuDoctora2;
         cargarTabla();
+        TableColumnModel tableColumnModel = jTable1.getColumnModel();
+        tableColumnModel.getColumn(0).setPreferredWidth(32);
+        tableColumnModel.getColumn(1).setPreferredWidth(200);
     }
 
     /**

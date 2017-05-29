@@ -13,12 +13,13 @@ import java.sql.Timestamp;
  * @author salva
  */
 public class VentaPOJO {
-private int idVenta;
-private int Usuario_idUsuario;
-private double total;
-private double pago;
-private double cambio;
-private String receptor;
+    private int idVenta;
+    private int Usuario_idUsuario;
+    private int Consulta_idCita;
+    private double total;
+    private double pago;
+    private double cambio;
+    private String receptor;
     private Timestamp fecha;
     private String orden;
     private String tipopago;
@@ -102,6 +103,14 @@ private String receptor;
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public int getConsulta_idCita() {
+        return Consulta_idCita;
+    }
+
+    public void setConsulta_idCita(int Consulta_idCita) {
+        this.Consulta_idCita = Consulta_idCita;
     }
 
     

@@ -118,15 +118,17 @@ public class ConsultaJDBC {
        }
        return true;
    }
+    
     public static boolean actualizar2(ConsultaPOJO pojo) {
        Connection con = null;
        PreparedStatement st = null;
        try {
            con = Conexion.getConnection();
            //Recuerden que el últmo es el id
-           st = con.prepareStatement("UPDATE "+TABLE+" SET resultado=? WHERE idCoonsulta=?");
+           st = con.prepareStatement("UPDATE "+TABLE+" SET resultado=?, estatus=? WHERE idCoonsulta=?");
            st.setString(1, pojo.getResultado());
-           st.setInt(2, pojo.getIdCita());
+           st.setString(2, pojo.getEstatus());
+           st.setInt(3, pojo.getIdCita());
 
            int x = st.executeUpdate();
 
@@ -260,32 +262,42 @@ public class ConsultaJDBC {
         ConsultaPOJO pojo = null;
         try {
             con = Conexion.getConnection();
+            //Obtienes todos los datos de la consulta
             st = con.prepareStatement("SELECT * FROM consulta WHERE Cliente_idCliente = ?");
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
+            //Nos vamos al último registro que es el que nos interesa, ya que éste tiene la última fecha
             rs.last();
             pojo = inflaPOJO(rs);
+            //Aquí estoy creando un formato de fecha
             SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");
             Calendar calendar = Calendar.getInstance();
-            
+            //Aquí estoy obteniendo la fecha de hoy para después compararla con la fecha de la última cita
             int mes = calendar.get(Calendar.MONTH)+1;
             java.util.Date fechaHoy = fecha.parse(calendar.get(Calendar.YEAR)+"-"+mes+"-"+calendar.get(Calendar.DAY_OF_MONTH));
             java.sql.Date fechaHoySql  = new java.sql.Date(fechaHoy.getTime());
-            
+            //Aquí obtengo la fecha del último reistro
             java.util.Date fechaPOJO = rs.getDate("fecha");
             java.sql.Date fechaPOJOSql = new java.sql.Date(fechaPOJO.getTime());
             
             System.out.println("fecha Hoy "+fechaHoySql);
             System.out.println("Fecha consulta"+fechaPOJOSql);
+            //Aquí comparo, si la fecha del último registro es anterior a hoy, entonces lleno el pojo
+            //con la información de ése registro
             if (fechaPOJOSql.before(fechaHoySql)) {
                 pojo = inflaPOJO(rs);
                 System.out.println(pojo.getFecha());
+            //Si la fecha del registro es después o igual a la fecha de hoy, entonces no es la última visita
             } else if (fechaPOJOSql.after(fechaHoySql)||fechaPOJOSql.equals(fechaHoySql)) {
+                //Entonces lo que hago es recorrer espacios hacia atrás
                 while (rs.previous()){
+                    //Inflo los pojo's y comparo fechas
                     pojo = inflaPOJO(rs);
                     fechaPOJO = rs.getDate("fecha");
                     fechaPOJOSql = new java.sql.Date(fechaPOJO.getTime());
                     System.out.println("SQL "+fechaHoySql);
+                    //Ahora, si la fecha del registro es anterior a hoy, entonces rompo el while y devuelvo el
+                    //pojo que cargué al final
                     if (fechaPOJOSql.before(fechaHoy)) {
                         break;
                     }

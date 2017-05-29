@@ -12,7 +12,6 @@ package POJO;
 public class Venta_has_Producto {
   private int Venta_idVenta;
   private int Producto_idProducto;
-  private double preciounitario;
 
     public int getVenta_idVenta() {
         return Venta_idVenta;
@@ -29,13 +28,4 @@ public class Venta_has_Producto {
     public void setProducto_idProducto(int Producto_idProducto) {
         this.Producto_idProducto = Producto_idProducto;
     }
-
-    public double getPreciounitario() {
-        return preciounitario;
-    }
-
-    public void setPreciounitario(double preciounitario) {
-        this.preciounitario = preciounitario;
-    }
-  
 }

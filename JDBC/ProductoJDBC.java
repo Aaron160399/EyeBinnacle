@@ -29,8 +29,8 @@ public class ProductoJDBC {
     private static final String TABLE="Producto";
     private static final String SQL_INSERT="INSERT INTO "+TABLE+" (Marca_idMarca, Proveedores_idProveedores, numeroIdentificacion, caracteristicas, precio, existente) VALUES (?,?,?,?,?,?)";
     private static final String SQL_QUERY="SELECT * FROM "+TABLE+ " WHERE numeroIdentificacion = ?";
-    private static final String SQL_QUERY_ALL = "SELECT * FROM " + TABLE ;
-    private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idProducto=?";
+    private static final String SQL_QUERY_ALL = "SELECT * FROM " + TABLE +" WHERE existente = true";
+    private static final String SQL_DELETE="UPDATE "+TABLE+" SET existente=? WHERE idProducto=?";
     private static final String SQL_UPDATE="UPDATE "+TABLE+" SET Marca_idMarca=?, Proveedores_idProveedores=?, numeroIdentificacion=?, caracteristicas=? WHERE idProducto=?";
    
     public static int insertar(ProductoPOJO pojo) {
@@ -75,13 +75,14 @@ public class ProductoJDBC {
     return lista;
     }
     
-    public static boolean eliminar(String id) {
+    public static boolean eliminar(String id, boolean existente) {
         Connection con = null;
         PreparedStatement st = null;
         try {
             con = Conexion.getConnection();
             st = con.prepareStatement(SQL_DELETE);
-            st.setString(1, id);
+            st.setBoolean(1, existente);
+            st.setString(2, id);
             int num = st.executeUpdate();
             if (num == 0) {
                 return false;
@@ -146,6 +147,34 @@ public class ProductoJDBC {
         return pojo;
     }
     
+    public static DefaultTableModel cargarTabla() {
+        Connection con = null;
+        PreparedStatement st = null;
+        DefaultTableModel dt = null;
+        String encabezados[] = {"Id","No. identificacón"};
+        try {
+            con = Conexion.getConnection();
+            st = con.prepareStatement(SQL_QUERY_ALL);
+            dt = new DefaultTableModel();
+            dt.setColumnIdentifiers(encabezados);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Object ob[] = new Object[2];
+                ProductoPOJO pojo = inflaPOJO(rs);
+                ob[0] = pojo.getIdProducto();
+                ob[1] = pojo.getNumeroIdentificacion();
+                dt.addRow(ob);
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.out.println("Error al cargar la tabla Producto" + e);
+        } finally {
+            Conexion.close(con);
+            Conexion.close(st);
+        }
+        return dt;
+    }
+    
     public static DefaultComboBoxModel cargarCombo() {
         Connection con = null;
         PreparedStatement st = null;
@@ -190,7 +219,7 @@ public class ProductoJDBC {
             while (marcasRS.next()) {
                 int pos = marcasRS.getInt("idMarca")-1;
                 marcas[pos] = new DefaultMutableTreeNode(marcasRS.getString("nombre"));
-                st = con.prepareStatement("SELECT * FROM producto WHERE Marca_idMarca ="+marcasRS.getInt("idMarca"));
+                st = con.prepareStatement("SELECT * FROM producto WHERE Marca_idMarca ="+marcasRS.getInt("idMarca")+" AND existente = true");
                 ResultSet rs = st.executeQuery();
                 while (rs.next()) {                    
                     ProductoPOJO productoPOJO = new ProductoPOJO();

@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -67,6 +68,15 @@ public class Agenda extends javax.swing.JFrame {
     
     public void cargarTabla(){
         jTable1.setModel(ConsultaJDBC.cargarTabla());
+        TableColumnModel tableColumnModel = jTable1.getColumnModel();
+        tableColumnModel.getColumn(2).setPreferredWidth(56);
+        tableColumnModel.getColumn(0).setPreferredWidth(24);
+        colorearTabla();
+    }
+    
+    public void colorearTabla(){
+        ColorFilas colorFilas = new ColorFilas();
+        jTable1.setDefaultRenderer(Object.class, colorFilas);
     }
 
     /**
@@ -139,6 +149,8 @@ public class Agenda extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 202, 490));
+
+        jScrollPane4.setHorizontalScrollBar(null);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos del paciente", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 18))); // NOI18N
 
@@ -414,6 +426,7 @@ public class Agenda extends javax.swing.JFrame {
         String id = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
         consultaPOJO.setIdCita(Integer.parseInt(id));
         consultaPOJO.setResultado(diagnostico1.getText());
+        consultaPOJO.setEstatus("Finalizada");
         if (ConsultaJDBC.actualizar2(consultaPOJO) == true) {
             JOptionPane.showMessageDialog(null, "Diagnóstico guardado correctamente");
             cargaInformacion(id);

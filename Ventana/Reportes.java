@@ -5,8 +5,11 @@
  */
 package Ventana;
 
+import JDBC.VentaJDBC;
 import java.awt.Color;
 import java.awt.Toolkit;
+import java.text.DecimalFormat;
+import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
@@ -59,6 +62,9 @@ public class Reportes extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        jDateChooser2 = new com.toedter.calendar.JDateChooser();
+        jButton3 = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -77,7 +83,6 @@ public class Reportes extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(445, 600));
         setMinimumSize(new java.awt.Dimension(445, 600));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -108,6 +113,22 @@ public class Reportes extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         jLabel7.setText("Total");
         getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 360, -1, -1));
+        getContentPane().add(jDateChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(131, 180, 120, -1));
+
+        jDateChooser2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jDateChooser2MouseReleased(evt);
+            }
+        });
+        getContentPane().add(jDateChooser2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 180, 120, -1));
+
+        jButton3.setText("Calcular");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 180, -1, -1));
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         jLabel8.setText("Total");
@@ -123,7 +144,7 @@ public class Reportes extends javax.swing.JFrame {
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel11.setText("a");
-        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 180, -1, -1));
+        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 180, -1, -1));
         getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 250, 50, -1));
         getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 250, 90, -1));
         getContentPane().add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 360, 90, -1));
@@ -169,6 +190,28 @@ public class Reportes extends javax.swing.JFrame {
         funciones.Desaparecer(this,menuSecre);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jDateChooser2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jDateChooser2MouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jDateChooser2MouseReleased
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        Date fecha1 = jDateChooser1.getDate();
+        Date fecha2 = jDateChooser2.getDate();
+        int tcrecibo[] = VentaJDBC.obtenerCantidades("tarjeta con recibo", fecha1, fecha2);
+        int tsrecibo[] = VentaJDBC.obtenerCantidades("tarjeta sin recibo", fecha1, fecha2);
+        int ecrecibo[] = VentaJDBC.obtenerCantidades("efectivo con recibo", fecha1, fecha2);
+        DecimalFormat decimalFormat = new DecimalFormat("$0.00");
+        jTextField1.setText(tcrecibo[0]+"");
+        jTextField2.setText(decimalFormat.format(tcrecibo[1])+"");
+        jTextField4.setText(tsrecibo[0]+"");
+        jTextField3.setText(decimalFormat.format(tsrecibo[1])+"");
+        jTextField6.setText(ecrecibo[0]+"");
+        jTextField5.setText(decimalFormat.format(ecrecibo[1])+"");
+        double montoTotal = tcrecibo[1]+tsrecibo[1]+ecrecibo[1];
+        jTextField7.setText(decimalFormat.format(montoTotal)+"");
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -207,6 +250,9 @@ public class Reportes extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
+    private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

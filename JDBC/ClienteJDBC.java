@@ -126,7 +126,7 @@ public class ClienteJDBC {
             dt.setColumnIdentifiers(encabezados);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                Object ob[] = new Object[8];
+                Object ob[] = new Object[3];
                 ClientePOJO pojo = inflaPOJO(rs);
                 ob[0] = pojo.getIdCliente();
                 ob[1] = pojo.getNombre();

@@ -59,6 +59,7 @@ private Timer t;
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(188, 185, 185));
         setUndecorated(true);
         getContentPane().setLayout(null);
         getContentPane().add(jProgressBar1);

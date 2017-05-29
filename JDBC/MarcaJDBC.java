@@ -52,7 +52,6 @@ public class MarcaJDBC {
         }
         return id;
     }
-   
     
     public static boolean eliminar(String id) {
         Connection con = null;
@@ -74,6 +73,7 @@ public class MarcaJDBC {
         }
         return true;
     }
+    
      public static boolean actualizar(MarcaPOJO pojo) {
 
         Connection con = null;
@@ -99,6 +99,7 @@ public class MarcaJDBC {
         }
         return true;
     }
+     
     public static DefaultTableModel cargarTabla() {
         Connection con = null;
         PreparedStatement st = null;
@@ -126,6 +127,7 @@ public class MarcaJDBC {
         }
         return dt;
     }
+    
     public static int obtenerID(String nombre) {
         Connection con = null;
         PreparedStatement st = null;
