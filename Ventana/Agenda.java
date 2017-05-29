@@ -48,6 +48,7 @@ public class Agenda extends javax.swing.JFrame {
         botonPres = boton;
         menuDoctora = menuDoctora2;
         cargarTabla();
+        setTitle("Agenda");
     }
     
     public void cargaInformacion(String id){

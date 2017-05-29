@@ -68,6 +68,7 @@ public class AgregarProducto extends javax.swing.JFrame {
         padre2 = padre;
         menu2 = menu;
         producto2 = producto;
+        
     }
 
     /**

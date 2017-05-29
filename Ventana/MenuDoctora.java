@@ -28,6 +28,7 @@ public class MenuDoctora extends javax.swing.JFrame {
         setLocation(((Toolkit.getDefaultToolkit().getScreenSize().width)/2)-(this.getSize().width/2), 
                 ((Toolkit.getDefaultToolkit().getScreenSize().height)/2)-(this.getSize().height/2));
         jToolBar1.setFloatable(false);
+        setTitle("Menu Doctora");
     }
     
     public void Activar(){
