@@ -15,6 +15,7 @@ public class ProductoPOJO {
     private int Proveedores_idProveedores;
     private String numeroIdentificacion;
     private String caracteristica;
+    private String imagen;
     private double precioventa;
     private boolean existente;
 
@@ -72,6 +73,14 @@ public class ProductoPOJO {
 
     public void setExistente(boolean existente) {
         this.existente = existente;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
     
    

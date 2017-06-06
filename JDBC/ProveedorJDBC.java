@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ProveedorJDBC {
     private static final String TABLE="Proveedor";
-    private static final String SQL_INSERT="INSERT INTO "+TABLE+" (nombre, apellidos, empresa, telefono) VALUES (?,?,?,?)";
+    private static final String SQL_INSERT="INSERT INTO "+TABLE+" (nombre, apellidos, empresa, telefono, activo) VALUES (?,?,?,?,?)";
     private static final String SQL_QUERY="SELECT * FROM "+TABLE+" WHERE idProveedores = ?";
     private static final String SQL_QUERY_ALL = "Select * from " + TABLE;
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idproveedores=?";
@@ -40,6 +40,7 @@ public class ProveedorJDBC {
             st.setString(2, pojo.getApellidos());
             st.setString(3, pojo.getEmpresa());
             st.setString(4, pojo.getTelefono());
+            st.setBoolean(5, pojo.isActivo());
             id = st.executeUpdate();
         } catch (Exception e) {
             System.out.println("Error al insertar " + e);

@@ -11,13 +11,25 @@ import JDBC.ProveedorJDBC;
 import POJO.MarcaPOJO;
 import POJO.ProductoPOJO;
 import POJO.ProveedorPOJO;
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
+import com.github.sarxos.webcam.WebcamUtils;
+import com.github.sarxos.webcam.util.ImageUtils;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Image;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 
@@ -40,6 +52,8 @@ public class AgregarProducto extends javax.swing.JFrame {
     private ResultSet conjuntoResultados;
     boolean sePuede = false;
     Productos producto2;
+    Webcam webcam = Webcam.getDefault();
+    WebcamPanel panel = new WebcamPanel(webcam, new Dimension(150, 150), false);
 
     /**
      * Creates new form AgregarProducto
@@ -68,7 +82,21 @@ public class AgregarProducto extends javax.swing.JFrame {
         padre2 = padre;
         menu2 = menu;
         producto2 = producto;
-        
+        generarCamara();
+    }
+    
+    public void generarCamara(){
+        webcam.setViewSize(WebcamResolution.VGA.getSize());
+        panel.setFillArea(true);
+        panel.setFPSDisplayed(true);
+        panel.setDisplayDebugInfo(true);
+        panel.setImageSizeDisplayed(true);
+        panel.setMirrored(true);
+        jPanel1.removeAll();
+        jPanel1.setLayout(new FlowLayout());
+        jPanel1.add(panel);
+        jPanel1.revalidate();
+        jPanel1.repaint();
     }
 
     /**
@@ -80,7 +108,6 @@ public class AgregarProducto extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -98,14 +125,16 @@ public class AgregarProducto extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        btnIniciaCamara = new javax.swing.JButton();
+        btnTomarFoto = new javax.swing.JButton();
+        btnTomarFotos = new javax.swing.JButton();
+        btnRepetir = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(300, 692));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel1.setText("jLabel1");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 160, 150, 150));
 
         jLabel2.setText("No. de identificación");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 390, -1, -1));
@@ -199,6 +228,34 @@ public class AgregarProducto extends javax.swing.JFrame {
         jToolBar1.add(jButton3);
 
         getContentPane().add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, -1));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 160, 150, 150));
+
+        btnIniciaCamara.setText("jButton4");
+        btnIniciaCamara.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIniciaCamaraActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnIniciaCamara, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 160, 40, -1));
+
+        btnTomarFoto.setText("jButton4");
+        btnTomarFoto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTomarFotoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnTomarFoto, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, 40, -1));
+
+        btnTomarFotos.setText("jButton4");
+        getContentPane().add(btnTomarFotos, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 220, 40, -1));
+
+        btnRepetir.setText("jButton4");
+        btnRepetir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRepetirActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnRepetir, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 250, 40, -1));
 
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/fondoAgregar.png"))); // NOI18N
         getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 300, 620));
@@ -210,8 +267,8 @@ public class AgregarProducto extends javax.swing.JFrame {
         // TODO add your handling code here:
         Funciones funciones = new Funciones();
         JFrame ventanas[] = {menu2, padre2};
-        botonPres.setEnabled(true);
         funciones.Desaparecer(this, ventanas);
+        producto2.estadoBotones();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -226,6 +283,7 @@ public class AgregarProducto extends javax.swing.JFrame {
             idMarca = MarcaJDBC.insertar(marcaPOJO);
             if (idMarca != 0) {
                 System.out.println("Nueva Marca Guardada");
+                jComboBox1.setModel(ProductoJDBC.cargarCombo());
             } else {
                 System.out.println("Nueva marca no guardada");
             }
@@ -239,6 +297,7 @@ public class AgregarProducto extends javax.swing.JFrame {
         productoPOJO.setCaracteristica(caracteristica);
         productoPOJO.setPrecioventa(precioVenta);
         productoPOJO.setExistente(true);
+        productoPOJO.setImagen("imagenes/"+jTextField2.getText()+".png");
         
         int x = ProductoJDBC.insertar(productoPOJO);
 
@@ -254,6 +313,7 @@ public class AgregarProducto extends javax.swing.JFrame {
             jTextField1.setText("");
             jTextField2.setText("");
             jFormattedTextField1.setText("");
+            generarCamara();
         } else {
             JOptionPane.showMessageDialog(null, "CATASTROPHIC ERROR");
         }
@@ -297,6 +357,48 @@ public class AgregarProducto extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
+    private void btnIniciaCamaraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciaCamaraActionPerformed
+        // TODO add your handling code here:
+        generarCamara();
+        panel.start();
+    }//GEN-LAST:event_btnIniciaCamaraActionPerformed
+
+    private void btnTomarFotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTomarFotoActionPerformed
+        // TODO add your handling code here:
+        File file = new File("imagenes");
+        if (!file.exists()) {
+            if (file.mkdir()) {
+                System.out.println("Directorio creado");
+            } else {
+                System.out.println("Directorio no creado");
+            }
+        } else {
+            System.out.println("Directorio ya existente");
+        }
+        WebcamUtils.capture(webcam, file+"\\"+jTextField2.getText(), ImageUtils.FORMAT_PNG);
+        panel.stop();
+        jPanel1.removeAll();
+        ImageIcon imageIcon = new ImageIcon("imagenes/"+jTextField2.getText()+".png");
+        Icon icon = new ImageIcon(imageIcon.getImage().getScaledInstance(jPanel1.getWidth(), jPanel1.getHeight(), Image.SCALE_DEFAULT));
+        JLabel jLabel = new JLabel();
+        jLabel.setSize(150, 150);
+        jLabel.setIcon(icon);
+        jPanel1.add(jLabel);
+        jPanel1.revalidate();
+        jPanel1.repaint();
+    }//GEN-LAST:event_btnTomarFotoActionPerformed
+
+    private void btnRepetirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRepetirActionPerformed
+        // TODO add your handling code here:
+        File file = new File("imagenes\\"+jTextField2.getText()+".png");
+        file.delete();
+        jPanel1.removeAll();
+        jPanel1.add(panel);
+        jPanel1.revalidate();
+        jPanel1.repaint();
+        panel.start();
+    }//GEN-LAST:event_btnRepetirActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -333,6 +435,10 @@ public class AgregarProducto extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnIniciaCamara;
+    private javax.swing.JButton btnRepetir;
+    private javax.swing.JButton btnTomarFoto;
+    private javax.swing.JButton btnTomarFotos;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -340,13 +446,13 @@ public class AgregarProducto extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JFormattedTextField jFormattedTextField1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;

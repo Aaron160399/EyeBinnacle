@@ -34,6 +34,7 @@ public class Ventas extends javax.swing.JFrame {
     JButton botonPres;
     MenuSecretaria menuSecretaria;
     UsuarioPOJO usuarioPOJO2;
+    double total;
     /**
      * Creates new form Ventas
      */
@@ -118,7 +119,7 @@ public class Ventas extends javax.swing.JFrame {
     public void calculaTotal(){
         int nLineas = jTable4.getRowCount();
         System.out.println(nLineas);
-        double total = 0;
+        total = 0;
         for (int i = 0; i < nLineas; i++) {
             total += Double.parseDouble(jTable4.getValueAt(i, 2).toString());
         }
@@ -164,6 +165,7 @@ public class Ventas extends javax.swing.JFrame {
         } else if (jRadioButton10.isSelected()) {
             ventaPOJO.setTipopago("efectivo con recibo");
         }
+        ventaPOJO.setEstado("pagado");
         ventaPOJO.setTipo("consulta");
         
         int x = VentaJDBC.insertar(ventaPOJO);
@@ -181,7 +183,11 @@ public class Ventas extends javax.swing.JFrame {
         ventaPOJO.setUsuario_idUsuario(usuarioPOJO2.getIdUsuario());
         ventaPOJO.setTotal(Double.parseDouble(jFormattedTextField1.getText()));
         ventaPOJO.setPago(Double.parseDouble(jFormattedTextField2.getText()));
-        ventaPOJO.setCambio(Double.parseDouble(jFormattedTextField3.getText()));
+        if (jFormattedTextField3.getText().isEmpty()) {
+            ventaPOJO.setCambio(0);
+        } else {
+            ventaPOJO.setCambio(Double.parseDouble(jFormattedTextField3.getText()));
+        }
         ventaPOJO.setReceptor(jTextField11.getText());
         ventaPOJO.setOrden(jTextField8.getText());
         if (jRadioButton8.isSelected()) {
@@ -191,6 +197,19 @@ public class Ventas extends javax.swing.JFrame {
         } else if (jRadioButton10.isSelected()) {
             ventaPOJO.setTipopago("efectivo con recibo");
         }
+        ventaPOJO.setTipoMica(jTextField4.getText());
+        ventaPOJO.setPrecioMica(Double.parseDouble(jFormattedTextField4.getText()));
+        Double monto = Double.parseDouble(jFormattedTextField1.getText());
+        Double pago = Double.parseDouble(jFormattedTextField2.getText());
+        if (pago < monto) {
+            ventaPOJO.setEstado("anticipo");
+        } else if (pago >= monto && jCheckBox1.isSelected() == false) {
+            ventaPOJO.setEstado("pagado");
+        } else if (pago >= monto && jCheckBox1.isSelected() == true) {
+            ventaPOJO.setEstado("pagado y entregado");
+        }
+        ventaPOJO.setTipoMica(jTextField4.getText());
+        ventaPOJO.setPrecioMica(Double.parseDouble(jFormattedTextField4.getText()));
         ventaPOJO.setTipo("producto");
         
         int idVenta = VentaJDBC.insertar2(ventaPOJO);
@@ -259,6 +278,10 @@ public class Ventas extends javax.swing.JFrame {
         jButton7 = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable4 = new javax.swing.JTable();
+        jLabel29 = new javax.swing.JLabel();
+        jLabel30 = new javax.swing.JLabel();
+        jFormattedTextField4 = new javax.swing.JFormattedTextField();
+        jTextField4 = new javax.swing.JTextField();
         PinfoPago = new javax.swing.JPanel();
         jTextField11 = new javax.swing.JTextField();
         jRadioButton8 = new javax.swing.JRadioButton();
@@ -272,6 +295,7 @@ public class Ventas extends javax.swing.JFrame {
         jLabel24 = new javax.swing.JLabel();
         jFormattedTextField2 = new javax.swing.JFormattedTextField();
         jLabel26 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -500,6 +524,19 @@ public class Ventas extends javax.swing.JFrame {
         jTable4.setEnabled(false);
         jScrollPane4.setViewportView(jTable4);
 
+        jLabel29.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel29.setText("Tipo de mica");
+
+        jLabel30.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel30.setText("Costo");
+
+        jFormattedTextField4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jFormattedTextField4.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jFormattedTextField4KeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout PproductosLayout = new javax.swing.GroupLayout(Pproductos);
         Pproductos.setLayout(PproductosLayout);
         PproductosLayout.setHorizontalGroup(
@@ -508,14 +545,22 @@ public class Ventas extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(PproductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(PproductosLayout.createSequentialGroup()
-                        .addComponent(jLabel23)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PproductosLayout.createSequentialGroup()
                         .addComponent(jTextField10)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton7)))
+                        .addComponent(jButton7))
+                    .addGroup(PproductosLayout.createSequentialGroup()
+                        .addComponent(jLabel30)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jFormattedTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(PproductosLayout.createSequentialGroup()
+                        .addComponent(jLabel23)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(PproductosLayout.createSequentialGroup()
+                        .addComponent(jLabel29)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField4)))
                 .addContainerGap())
         );
         PproductosLayout.setVerticalGroup(
@@ -531,6 +576,14 @@ public class Ventas extends javax.swing.JFrame {
                     .addComponent(jButton7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(PproductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(PproductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jFormattedTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -578,6 +631,8 @@ public class Ventas extends javax.swing.JFrame {
         jLabel26.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel26.setText("Tipo de pago");
 
+        jCheckBox1.setText("Entrega de lentes");
+
         javax.swing.GroupLayout PinfoPagoLayout = new javax.swing.GroupLayout(PinfoPago);
         PinfoPago.setLayout(PinfoPagoLayout);
         PinfoPagoLayout.setHorizontalGroup(
@@ -586,21 +641,23 @@ public class Ventas extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(PinfoPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel24)
-                    .addGroup(PinfoPagoLayout.createSequentialGroup()
-                        .addGroup(PinfoPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel25)
-                            .addComponent(jLabel27)
-                            .addComponent(jLabel28)
-                            .addComponent(jFormattedTextField1)
-                            .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(41, 41, 41)
-                        .addGroup(PinfoPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton9)
-                            .addComponent(jRadioButton10)
-                            .addComponent(jRadioButton8)
-                            .addComponent(jLabel26)))
                     .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jFormattedTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(PinfoPagoLayout.createSequentialGroup()
+                        .addGroup(PinfoPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(PinfoPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel25)
+                                .addComponent(jLabel27)
+                                .addComponent(jLabel28)
+                                .addComponent(jFormattedTextField1)
+                                .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jFormattedTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(41, 41, 41)
+                        .addGroup(PinfoPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jRadioButton9)
+                            .addComponent(jRadioButton10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jRadioButton8)
+                            .addComponent(jLabel26)
+                            .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         PinfoPagoLayout.setVerticalGroup(
@@ -631,9 +688,12 @@ public class Ventas extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(8, 8, 8)
-                .addComponent(jLabel28)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jFormattedTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(PinfoPagoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(PinfoPagoLayout.createSequentialGroup()
+                        .addComponent(jLabel28)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jFormattedTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jCheckBox1))
                 .addContainerGap())
         );
 
@@ -652,7 +712,8 @@ public class Ventas extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Pproductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(PinfoPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(PinfoPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jLayeredPane1.setLayer(Pconsulta, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(Pproductos, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -763,6 +824,12 @@ public class Ventas extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jFormattedTextField4KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jFormattedTextField4KeyReleased
+        // TODO add your handling code here:
+        double total2 = Double.parseDouble(jFormattedTextField4.getText());
+        jFormattedTextField1.setText(total+total2+"");
+    }//GEN-LAST:event_jFormattedTextField4KeyReleased
+
     /**
      * @param args the command line arguments
      */
@@ -809,9 +876,11 @@ public class Ventas extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JFormattedTextField jFormattedTextField2;
     private javax.swing.JFormattedTextField jFormattedTextField3;
+    private javax.swing.JFormattedTextField jFormattedTextField4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
@@ -822,7 +891,9 @@ public class Ventas extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLayeredPane jLayeredPane1;
@@ -843,6 +914,7 @@ public class Ventas extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField11;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
     private javax.swing.JToolBar jToolBar1;

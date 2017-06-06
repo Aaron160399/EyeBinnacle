@@ -75,6 +75,16 @@ public class Cliente extends javax.swing.JFrame {
         }
         jTextArea1.setText(ConsultaJDBC.cargarExpediente(Integer.parseInt(id)));
     }
+    
+    public void abrirVentana(JFrame[] ventanas){
+        Funciones funciones = new Funciones();
+        funciones.cambiarEstadoBotones(jButton1, jButton2);
+        funciones.CalcularPosicion(ventanas, 2);
+    }
+    public void estadoBotones(){
+        Funciones funciones = new Funciones();
+        funciones.cambiarEstadoBotones(jButton1, jButton2);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -97,11 +107,9 @@ public class Cliente extends javax.swing.JFrame {
         jTextField3 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jTextField5 = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jTextField6 = new javax.swing.JTextField();
         jToolBar1 = new javax.swing.JToolBar();
         jButton2 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
@@ -130,7 +138,7 @@ public class Cliente extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 630, 66, 60));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 610, 66, 60));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -171,13 +179,9 @@ public class Cliente extends javax.swing.JFrame {
         jTextField5.setEditable(false);
         getContentPane().add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 350, 160, -1));
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel8.setText("Próxima visita");
-        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 410, -1, -1));
-
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel9.setText("Expediente");
-        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 460, -1, -1));
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 400, -1, -1));
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
@@ -185,10 +189,7 @@ public class Cliente extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 490, 300, 130));
-
-        jTextField6.setEditable(false);
-        getContentPane().add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 410, 160, -1));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 430, 300, 170));
 
         jToolBar1.setRollover(true);
 
@@ -213,21 +214,17 @@ public class Cliente extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         int id = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString());
-        Historial historial = new Historial(jButton2, this, menuDoc, id);
+        Historial historial = new Historial(jButton2, this, menuDoc, id, null, this);
         historial.setVisible(true);
         JFrame ventanas[] = {menuDoc, this, historial};
-        jButton2.setEnabled(false);
-        //jButton1.setDisabledIcon(new ImageIcon(getClass().getResource("/IMG/inventarioSe.png")));
-        //Desactivar(jButton2, jButton3, jButton4);
-        Funciones funciones = new Funciones();
-        funciones.CalcularPosicion(ventanas, 2);
+        abrirVentana(ventanas);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         Funciones funciones = new Funciones();
         funciones.Desaparecer(this,menuDoc);
-        menuDoctora.Activar();
+        menuDoctora.estadoBotones();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
@@ -286,7 +283,6 @@ public class Cliente extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -296,7 +292,6 @@ public class Cliente extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 }

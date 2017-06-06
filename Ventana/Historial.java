@@ -22,13 +22,15 @@ public class Historial extends javax.swing.JFrame {
     JButton botonPres;
     JFrame padre2;
     JFrame menu2;
+    Agenda agenda2; 
+    Cliente cliente2;
     /**
      * Creates new form Historial
      */
     public Historial() {
         initComponents();
     }
-    public Historial(JButton boton, JFrame padre, JFrame menu, int idCliente) {
+    public Historial(JButton boton, JFrame padre, JFrame menu, int idCliente, Agenda agenda, Cliente cliente) {
         setUndecorated(true);
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         setOpacity(0);
@@ -42,7 +44,8 @@ public class Historial extends javax.swing.JFrame {
         padre2 = padre;
         menu2 = menu;
         cargarTabla(idCliente);
-//        obtenerTamanhoColumna("Hola");
+        agenda2 = agenda;
+        cliente2 = cliente;
     }
     
     public void cargarTabla(int id){
@@ -111,7 +114,9 @@ public class Historial extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(446, 692));
+        setMaximumSize(new java.awt.Dimension(430, 692));
+        setMinimumSize(new java.awt.Dimension(430, 692));
+        setPreferredSize(new java.awt.Dimension(430, 692));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -190,8 +195,12 @@ public class Historial extends javax.swing.JFrame {
         // TODO add your handling code here:
         Funciones funciones = new Funciones();
         JFrame ventanas[] = {menu2, padre2};
-        botonPres.setEnabled(true);
         funciones.Desaparecer(this, ventanas);
+        if (agenda2 != null) {
+            agenda2.estadoBotones();
+        } else if (cliente2 != null) {
+            cliente2.estadoBotones();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked

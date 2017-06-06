@@ -7,6 +7,7 @@ package Ventana;
 
 import POJO.UsuarioPOJO;
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.Toolkit;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -29,25 +30,20 @@ public class MenuDoctora extends javax.swing.JFrame {
                 ((Toolkit.getDefaultToolkit().getScreenSize().height)/2)-(this.getSize().height/2));
         jToolBar1.setFloatable(false);
         setTitle("Menu Doctora");
+        Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/IMG/Sin título-1.png"));
+        setIconImage(icon);
+        setVisible(true);
     }
     
-    public void Activar(){
-        jButton1.setEnabled(true);
-        jButton2.setEnabled(true);
-        jButton3.setEnabled(true);
-        jButton4.setEnabled(true);
-        jButton1.setDisabledIcon(null);
-        jButton2.setDisabledIcon(null);
-        jButton3.setDisabledIcon(null);
-        jButton4.setDisabledIcon(null);
+    public void abrirVentana(JFrame[] ventanas){
+        Funciones funciones = new Funciones();
+        funciones.cambiarEstadoBotones(jButton1, jButton2, jButton3, jButton4, jButton5, jButton6);
+        funciones.CalcularPosicion(ventanas, 1);
     }
-    
-    public void Desactivar(JButton b1, JButton b2, JButton b3){
-        b1.setEnabled(false);
-        b2.setEnabled(false);
-        b3.setEnabled(false);
+    public void estadoBotones(){
+        Funciones funciones = new Funciones();
+        funciones.cambiarEstadoBotones(jButton1, jButton2, jButton3, jButton4, jButton5, jButton6);
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -191,11 +187,8 @@ public class MenuDoctora extends javax.swing.JFrame {
         Productos productos = new Productos(this, jButton2, this);
         productos.setVisible(true);
         JFrame ventanas[] = {this, productos};
-        jButton1.setEnabled(false);
         jButton1.setDisabledIcon(new ImageIcon(getClass().getResource("/IMG/inventarioSe.png")));
-        Desactivar(jButton2, jButton3, jButton4);
-        Funciones funciones = new Funciones();
-        funciones.CalcularPosicion(ventanas, 1);
+        abrirVentana(ventanas);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -203,11 +196,8 @@ public class MenuDoctora extends javax.swing.JFrame {
         Agenda agenda = new Agenda(this, jButton2, this);
         agenda.setVisible(true);
         JFrame ventanas[] = {this, agenda};
-        jButton2.setEnabled(false);
         jButton2.setDisabledIcon(new ImageIcon(getClass().getResource("/IMG/agendaSe.png")));
-        Desactivar(jButton1, jButton3, jButton4);
-        Funciones funciones = new Funciones();
-        funciones.CalcularPosicion(ventanas, 1);
+        abrirVentana(ventanas);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseEntered
@@ -221,11 +211,8 @@ public class MenuDoctora extends javax.swing.JFrame {
         Cliente cliente = new Cliente(this, jButton4, this);
         cliente.setVisible(true);
         JFrame ventanas[] = {this, cliente};
-        jButton4.setEnabled(false);
         jButton4.setDisabledIcon(new ImageIcon(getClass().getResource("/IMG/clienteSe.png")));
-        Desactivar(jButton1, jButton3, jButton2);
-        Funciones funciones = new Funciones();
-        funciones.CalcularPosicion(ventanas, 1);
+        abrirVentana(ventanas);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -251,11 +238,8 @@ public class MenuDoctora extends javax.swing.JFrame {
         Proveedores proveedores = new Proveedores(this, jButton2, this);
         proveedores.setVisible(true);
         JFrame ventanas[] = {this, proveedores};
-        jButton3.setEnabled(false);
         jButton3.setDisabledIcon(new ImageIcon(getClass().getResource("/IMG/proveedoresSe.png")));
-        Desactivar(jButton2, jButton1, jButton4);
-        Funciones funciones = new Funciones();
-        funciones.CalcularPosicion(ventanas, 1);
+        abrirVentana(ventanas);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseEntered

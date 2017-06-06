@@ -5,10 +5,27 @@
  */
 package Ventana;
 
+import JDBC.VentaJDBC;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JTable;
 import javax.swing.Timer;
 
 /**
@@ -212,8 +229,60 @@ public class Funciones {
         t.start();
     }
     
-    public void GetAllFrames(){
-        int components = 2;
-        System.out.println(components);
+    public void generarPDF(java.util.Date fechaInicio, java.util.Date fechaFinal) throws FileNotFoundException, DocumentException, IOException{
+        Calendar calendar = Calendar.getInstance();
+        String fecha = calendar.get(Calendar.DAY_OF_MONTH)+"-"+(calendar.get(Calendar.MONTH) + 1)+"-"+calendar.get(Calendar.YEAR);
+        FileOutputStream archivo = new FileOutputStream("C:\\Users\\aaron\\Documents\\reporte "+fecha+".pdf");
+        File file = new File("C:\\Users\\aaron\\Documents\\reporte "+fecha+".pdf");
+        Document documento = new Document(PageSize.LETTER.rotate());
+        PdfWriter.getInstance(documento, archivo);
+        documento.open();
+        reporteVentas(documento, fechaInicio, fechaFinal);
+        //documento.add(new Paragraph("Hola Mundo!"));
+        documento.addAuthor("Aarón");
+        documento.addKeywords("Creación de pdf, pdf y java");
+        documento.close();
+        Desktop.getDesktop().open(file);
+    }
+    
+    public PdfPTable generarTabla(String [] encabezados){
+        PdfPTable pdfPTable = new PdfPTable(encabezados.length);
+        for (int i = 0; i < encabezados.length; i++) {
+            PdfPCell pdfPCell = new PdfPCell(new Paragraph(encabezados[i]));
+            pdfPTable.addCell(pdfPCell);
+        }
+        return pdfPTable;
+    }
+    
+    public void reporteVentas(Document documento, java.util.Date fechaInicio, java.util.Date fechaFinal) throws DocumentException{
+        Font fuenteTitulo = new Font(Font.FontFamily.TIMES_ROMAN, (float) 15.0, Font.BOLD);
+        Paragraph titulo = new Paragraph();
+        titulo.add("Reporte de...");
+        titulo.setAlignment(Paragraph.ALIGN_CENTER);
+        titulo.setFont(fuenteTitulo);
+        documento.add(titulo);
+        documento.add(new Paragraph("\n"));
+        documento.add(VentaJDBC.cargarTablaPDF(fechaInicio, fechaFinal, 1));
+        documento.add(new Paragraph("\n"));
+        documento.add(VentaJDBC.cargarTablaPDF(fechaInicio, fechaFinal, 2));
+    }
+    
+    public void cambiarEstadoBotones(Object... objetos){
+        for (int i = 0; i < objetos.length; i++) {
+            if (objetos[i] instanceof JButton) {
+                if (((JButton)(objetos[i])).isEnabled()) {
+                    ((JButton)objetos[i]).setEnabled(false);
+                } else {
+                    ((JButton)objetos[i]).setEnabled(true);
+                    ((JButton)objetos[i]).setDisabledIcon(null);
+                }
+            } else if (objetos[i] instanceof JTable) {
+                if (((JTable)(objetos[i])).isEnabled()) {
+                    ((JTable)objetos[i]).setEnabled(false);
+                } else {
+                    ((JTable)objetos[i]).setEnabled(true);
+                }
+            }
+        }
     }
 }

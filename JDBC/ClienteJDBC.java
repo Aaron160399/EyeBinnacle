@@ -66,6 +66,7 @@ public class ClienteJDBC {
         } finally {
             Conexion.close(con);
             Conexion.close(st);
+            Conexion.close(rs);
         }
         return id;
     }

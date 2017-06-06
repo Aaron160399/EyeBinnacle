@@ -13,8 +13,12 @@ import POJO.MarcaPOJO;
 import POJO.ProductoPOJO;
 import POJO.ProveedorPOJO;
 import java.awt.Color;
+import java.awt.Image;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JRootPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -67,7 +71,16 @@ public class Productos extends javax.swing.JFrame {
         jTree1.setModel(dtm);
     }
    
-     
+    public void abrirVentana(JFrame[] ventanas){
+        Funciones funciones = new Funciones();
+        funciones.cambiarEstadoBotones(jButton1, jButton2, jButton3, jButton4);
+        funciones.CalcularPosicion(ventanas, 2);
+    } 
+    
+    public void estadoBotones(){
+        Funciones funciones = new Funciones();
+        funciones.cambiarEstadoBotones(jButton1, jButton2, jButton3, jButton4);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -261,6 +274,9 @@ public class Productos extends javax.swing.JFrame {
                 jTextField3.setText(proveedorPOJO.getNombre()+" "+proveedorPOJO.getApellidos());
                 jTextField4.setText(productoPOJO.getPrecioventa()+"");
                 jTextArea1.setText(productoPOJO.getCaracteristica());
+                ImageIcon imageIcon = new ImageIcon(productoPOJO.getImagen());
+                Icon icon = new ImageIcon(imageIcon.getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_DEFAULT));
+                foto.setIcon(icon);
             } catch (Exception e) {
                 
             }
@@ -271,7 +287,7 @@ public class Productos extends javax.swing.JFrame {
         // TODO add your handling code here:
         Funciones funciones = new Funciones();
         funciones.Desaparecer(this,menuDoc);
-        menuDoctora.Activar();
+        menuDoctora.estadoBotones();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -279,7 +295,7 @@ public class Productos extends javax.swing.JFrame {
         AgregarProducto agregarProducto = new AgregarProducto(jButton1, this, menuDoc, this);
         agregarProducto.setVisible(true);
         JFrame ventanas[] = {menuDoc, this, agregarProducto};
-        jButton1.setEnabled(false);
+        abrirVentana(ventanas);
         //jButton1.setDisabledIcon(new ImageIcon(getClass().getResource("/IMG/inventarioSe.png")));
         //Desactivar(jButton2, jButton3, jButton4);
         Funciones funciones = new Funciones();

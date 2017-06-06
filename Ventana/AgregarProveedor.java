@@ -148,8 +148,8 @@ public class AgregarProveedor extends javax.swing.JFrame {
         // TODO add your handling code here:
         Funciones funciones = new Funciones();
         JFrame ventanas[] = {menu2, padre2};
-        botonPres.setEnabled(true);
         funciones.Desaparecer(this, ventanas);
+        proveedores2.estadoBotones();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -163,6 +163,7 @@ public class AgregarProveedor extends javax.swing.JFrame {
         proveedorPOJO.setApellidos(apellidos);
         proveedorPOJO.setEmpresa(empresa);
         proveedorPOJO.setTelefono(telefono);
+        proveedorPOJO.setActivo(true);
         int x = ProveedorJDBC.insertar(proveedorPOJO);
 
         if (x != 0) {

@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Toolkit;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -34,24 +35,23 @@ import javax.swing.UnsupportedLookAndFeelException;
  *
  * @author aaron
  */
-public class VerCita extends javax.swing.JFrame {
+public class TodasLasCitas extends javax.swing.JFrame {
     JFrame menuSecre;
     JButton botonPres;
     MenuSecretaria menuSecretaria;
-    int id2;
     TextAutoCompleter nombres;
     ClientePOJO clientePOJO;
     ConsultaPOJO consultaPOJO;
     /**
      * Creates new form VerCita
      */
-    public VerCita() {
+    public TodasLasCitas() {
         initComponents();
         getContentPane().setBackground(Color.WHITE);
         setLocationRelativeTo(null);
     }
     
-    public VerCita(JFrame menu, JButton boton, MenuSecretaria menuSecretaria2, int id) {
+    public TodasLasCitas(JFrame menu, JButton boton, MenuSecretaria menuSecretaria2) {
         setUndecorated(true);
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         setOpacity(0);
@@ -63,52 +63,60 @@ public class VerCita extends javax.swing.JFrame {
         botonPres = boton;
         menuSecretaria = menuSecretaria2;
         jToolBar1.setFloatable(false);
-        id2 = id;
-        cargarInformacion();
         
-        nombres = new TextAutoCompleter(nombre, new AutoCompleterCallback() {
-            @Override
-            public void callback(Object o) {
-                Object a = nombres.findItem(o);
-                clientePOJO = (ClientePOJO) a;
-                nombre.setText(clientePOJO.getNombre());
-                apellido.setText(clientePOJO.getApellidos());
-                telefono.setText(clientePOJO.getTelefono());
-                celular.setText(clientePOJO.getCelular());
-            }
-        });
-        ClienteJDBC.cargarCompleter(nombres);
-        jCheckBoxMenuItem1.setSelected(false);
-        jCheckBoxMenuItem2.setSelected(false);
-        jCheckBoxMenuItem3.setSelected(false);
-        jCheckBoxMenuItem4.setSelected(false);
-        jCheckBoxMenuItem5.setSelected(false);
+        cargaTabla(obtenerFechaHoy());
+    }
+    
+    public void cargaTabla(java.util.Date fecha){
+        jTable1.setModel(ConsultaJDBC.cargarTablaTodas(fecha));
+    }
+    
+    public java.util.Date obtenerFechaHoy(){
+        Calendar calendar = Calendar.getInstance();
+        int anho = calendar.get(Calendar.YEAR);
+        int mes = calendar.get(Calendar.MONTH)+1;
+        int dia = calendar.get(Calendar.DAY_OF_MONTH);
+        String fecha = anho+"-"+mes+"-"+dia;
+        System.out.println(fecha);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date fechaUTIL = null;
+        try {
+             fechaUTIL = simpleDateFormat.parse(fecha);
+             return fechaUTIL;
+        } catch (ParseException ex) {
+            Logger.getLogger(TodasLasCitas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return fechaUTIL;
     }
     
     public void cargarInformacion(){
-        consultaPOJO = ConsultaJDBC.consultar(String.valueOf(id2));
-        ClientePOJO clientePOJO = ClienteJDBC.consultar(String.valueOf(consultaPOJO.getCliente_idCliente()));
-        nombre.setText(clientePOJO.getNombre());
-        apellido.setText(clientePOJO.getApellidos());
-        telefono.setText(clientePOJO.getTelefono());
-        celular.setText(clientePOJO.getCelular());
-        celular.setText(clientePOJO.getCelular());
-        jDateChooser1.setDate(consultaPOJO.getFecha());
-        jTextField1.setText(consultaPOJO.getHoraInicio()+"");
-        jTextField3.setText(consultaPOJO.getVisita());
-        jTextField2.setText(consultaPOJO.getAseguradora_empresa());
-        jTextArea1.setText(consultaPOJO.getAsunto());
-        if (consultaPOJO.getEstatus().equalsIgnoreCase("Sin comenzar")) {
-            jComboBox1.setSelectedIndex(0);
-        } else if (consultaPOJO.getEstatus().equalsIgnoreCase("Finalizada")) {
-            jComboBox1.setSelectedIndex(1);
-        } else if (consultaPOJO.getEstatus().equalsIgnoreCase("Cancelada")) {
-            jComboBox1.setSelectedIndex(2);
+        try {
+            consultaPOJO = ConsultaJDBC.consultar(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString());
+            clientePOJO = ClienteJDBC.consultar(String.valueOf(consultaPOJO.getCliente_idCliente()));
+            nombre.setText(clientePOJO.getNombre());
+            apellido.setText(clientePOJO.getApellidos());
+            telefono.setText(clientePOJO.getTelefono());
+            celular.setText(clientePOJO.getCelular());
+            celular.setText(clientePOJO.getCelular());
+            jDateChooser1.setDate(consultaPOJO.getFecha());
+            jTextField1.setText(consultaPOJO.getHoraInicio()+"");
+            jTextField3.setText(consultaPOJO.getVisita());
+            jTextField2.setText(consultaPOJO.getAseguradora_empresa());
+            jTextArea1.setText(consultaPOJO.getAsunto());
+            if (consultaPOJO.getEstatus().equalsIgnoreCase("Sin comenzar")) {
+                jComboBox1.setSelectedIndex(0);
+            } else if (consultaPOJO.getEstatus().equalsIgnoreCase("Finalizada")) {
+                jComboBox1.setSelectedIndex(1);
+            } else if (consultaPOJO.getEstatus().equalsIgnoreCase("Cancelada")) {
+                jComboBox1.setSelectedIndex(2);
+            }
+        } catch (Exception e) {
+            System.out.println("No hay selección");
         }
     }
     
     public void cargarInformacionAEditar(){
-        consultaPOJO.setIdCita(id2);
+        consultaPOJO.setIdCita(Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
         
         if (jCheckBoxMenuItem1.isSelected()) {
             consultaPOJO.setCliente_idCliente(clientePOJO.getIdCliente());
@@ -130,7 +138,7 @@ public class VerCita extends javax.swing.JFrame {
             try {
                 hora = (java.util.Date)simpleDateFormat.parse(jTextField1.getText());
             } catch (ParseException ex) {
-                Logger.getLogger(VerCita.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TodasLasCitas.class.getName()).log(Level.SEVERE, null, ex);
             }
             horaInicio = new java.sql.Time(hora.getTime());
             consultaPOJO.setHoraInicio(horaInicio);
@@ -153,6 +161,13 @@ public class VerCita extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        jDateChooser2 = new com.toedter.calendar.JDateChooser();
+        jLabel13 = new javax.swing.JLabel();
+        jTextField4 = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -188,10 +203,92 @@ public class VerCita extends javax.swing.JFrame {
         jCheckBoxMenuItem5 = new javax.swing.JCheckBoxMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(376, 630));
-        setMinimumSize(new java.awt.Dimension(376, 630));
-        setPreferredSize(new java.awt.Dimension(376, 630));
+        setMaximumSize(new java.awt.Dimension(630, 630));
+        setMinimumSize(new java.awt.Dimension(630, 630));
+        setPreferredSize(new java.awt.Dimension(630, 630));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Orden", "Paciente", "Fecha"
+            }
+        ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jTable1MouseExited(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jTable1MouseReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel2.setText("Fecha");
+
+        jDateChooser2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jDateChooser2MouseClicked(evt);
+            }
+        });
+        jDateChooser2.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jDateChooser2PropertyChange(evt);
+            }
+        });
+        jDateChooser2.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                jDateChooser2InputMethodTextChanged(evt);
+            }
+        });
+
+        jLabel13.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel13.setText("Paciente");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel13))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jDateChooser2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2)
+                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 170, 300, 400));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -266,53 +363,51 @@ public class VerCita extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(apellido, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addGap(18, 18, 18)
-                        .addComponent(telefono))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(celular)
-                        .addGap(1, 1, 1))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(18, 18, 18)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel8)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel12)
                         .addGap(18, 18, 18)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton2))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField2))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addGap(18, 18, 18)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel8))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel10)
                         .addGap(22, 22, 22)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addComponent(jTextField3))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(celular))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18)
+                                .addComponent(telefono))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(apellido, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -336,18 +431,17 @@ public class VerCita extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel8)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(5, 5, 5)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -361,10 +455,10 @@ public class VerCita extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel12)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 164, 356, 430));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 170, 320, 430));
 
         jToolBar1.setRollover(true);
 
@@ -386,7 +480,6 @@ public class VerCita extends javax.swing.JFrame {
 
         jMenu2.setText("Editar");
 
-        jCheckBoxMenuItem1.setSelected(true);
         jCheckBoxMenuItem1.setText("Cliente");
         jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -395,7 +488,6 @@ public class VerCita extends javax.swing.JFrame {
         });
         jMenu2.add(jCheckBoxMenuItem1);
 
-        jCheckBoxMenuItem2.setSelected(true);
         jCheckBoxMenuItem2.setText("Fecha");
         jCheckBoxMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -404,7 +496,6 @@ public class VerCita extends javax.swing.JFrame {
         });
         jMenu2.add(jCheckBoxMenuItem2);
 
-        jCheckBoxMenuItem3.setSelected(true);
         jCheckBoxMenuItem3.setText("Hora");
         jCheckBoxMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -413,7 +504,6 @@ public class VerCita extends javax.swing.JFrame {
         });
         jMenu2.add(jCheckBoxMenuItem3);
 
-        jCheckBoxMenuItem4.setSelected(true);
         jCheckBoxMenuItem4.setText("Tipo de visita");
         jCheckBoxMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -422,7 +512,6 @@ public class VerCita extends javax.swing.JFrame {
         });
         jMenu2.add(jCheckBoxMenuItem4);
 
-        jCheckBoxMenuItem5.setSelected(true);
         jCheckBoxMenuItem5.setText("Asunto");
         jCheckBoxMenuItem5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -446,7 +535,7 @@ public class VerCita extends javax.swing.JFrame {
         // TODO add your handling code here:
         Funciones funciones = new Funciones();
         funciones.Desaparecer(this,menuSecre);
-        menuSecretaria.activar();
+        menuSecretaria.activar2();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -455,6 +544,11 @@ public class VerCita extends javax.swing.JFrame {
         if (ConsultaJDBC.actualizar(consultaPOJO) == true) {
                 JOptionPane.showMessageDialog(null, "Actualización exitosa");
                 menuSecretaria.cargarTabla();
+                try {
+                    cargaTabla(jDateChooser2.getDate());
+                } catch (Exception e) {
+                    cargaTabla(obtenerFechaHoy());
+                }
             } else {
                 System.out.println("Cita no actualizada");
             }
@@ -464,6 +558,18 @@ public class VerCita extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (jCheckBoxMenuItem1.isSelected()) {
             nombre.setEditable(true);
+            nombres = new TextAutoCompleter(nombre, new AutoCompleterCallback() {
+            @Override
+            public void callback(Object o) {
+                Object a = nombres.findItem(o);
+                clientePOJO = (ClientePOJO) a;
+                nombre.setText(clientePOJO.getNombre());
+                apellido.setText(clientePOJO.getApellidos());
+                telefono.setText(clientePOJO.getTelefono());
+                celular.setText(clientePOJO.getCelular());
+                }
+            });
+            ClienteJDBC.cargarCompleter(nombres);
         } else if (jCheckBoxMenuItem1.isSelected() == false){
             nombre.setEditable(false);
         }
@@ -510,6 +616,29 @@ public class VerCita extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jCheckBoxMenuItem5ActionPerformed
 
+    private void jDateChooser2InputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jDateChooser2InputMethodTextChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jDateChooser2InputMethodTextChanged
+
+    private void jDateChooser2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jDateChooser2MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jDateChooser2MouseClicked
+
+    private void jDateChooser2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser2PropertyChange
+        // TODO add your handling code here:
+        java.util.Date fecha = jDateChooser2.getDate();
+        cargaTabla(fecha);
+    }//GEN-LAST:event_jDateChooser2PropertyChange
+
+    private void jTable1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTable1MouseExited
+
+    private void jTable1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseReleased
+        // TODO add your handling code here:
+        cargarInformacion();
+    }//GEN-LAST:event_jTable1MouseReleased
+
     /**
      * @param args the command line arguments
      */
@@ -527,14 +656,15 @@ public class VerCita extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VerCita.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TodasLasCitas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VerCita.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TodasLasCitas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VerCita.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TodasLasCitas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VerCita.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TodasLasCitas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
         
 
@@ -544,9 +674,9 @@ public class VerCita extends javax.swing.JFrame {
                 try {
                     UIManager.setLookAndFeel(new Quaqua15LeopardCrossPlatformLookAndFeel());
                 } catch (UnsupportedLookAndFeelException ex) {
-                    Logger.getLogger(VerCita.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TodasLasCitas.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                new VerCita().setVisible(true);
+                new TodasLasCitas().setVisible(true);
             }
         });
     }
@@ -563,10 +693,13 @@ public class VerCita extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem5;
     private javax.swing.JComboBox jComboBox1;
     private com.toedter.calendar.JDateChooser jDateChooser1;
+    private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -577,11 +710,15 @@ public class VerCita extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTextField nombre;
     private javax.swing.JTextField telefono;

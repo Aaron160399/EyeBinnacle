@@ -8,6 +8,7 @@ package Ventana;
 import JDBC.ProveedorJDBC;
 import POJO.ProveedorPOJO;
 import java.awt.Color;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -61,6 +62,17 @@ public class Proveedores extends javax.swing.JFrame {
         tableColumnModel.getColumn(0).setPreferredWidth(32);
         tableColumnModel.getColumn(1).setPreferredWidth(200);
     }
+    
+    public void abrirVentana(JFrame[] ventanas){
+        Funciones funciones = new Funciones();
+        funciones.cambiarEstadoBotones(jButton1, jButton3, jButton4, jTable1);
+        funciones.CalcularPosicion(ventanas, 2);
+    }
+    
+    public void estadoBotones(){
+        Funciones funciones = new Funciones();
+        funciones.cambiarEstadoBotones(jButton1, jButton3, jButton4, jTable1);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -85,7 +97,6 @@ public class Proveedores extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -132,9 +143,17 @@ public class Proveedores extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel4.setText("Teléfono");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(316, 344, -1, -1));
+
+        jTextField1.setEditable(false);
         getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(449, 184, 150, -1));
+
+        jTextField2.setEditable(false);
         getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(449, 239, 150, -1));
+
+        jTextField3.setEditable(false);
         getContentPane().add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(449, 295, 150, -1));
+
+        jTextField4.setEditable(false);
         getContentPane().add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(449, 348, 150, -1));
 
         jToolBar1.setRollover(true);
@@ -175,17 +194,6 @@ public class Proveedores extends javax.swing.JFrame {
         });
         jToolBar1.add(jButton3);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/reportes.png"))); // NOI18N
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton2);
-
         getContentPane().add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 609, -1));
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/fondoProveedores.png"))); // NOI18N
@@ -198,20 +206,15 @@ public class Proveedores extends javax.swing.JFrame {
         // TODO add your handling code here:
         Funciones funciones = new Funciones();
         funciones.Desaparecer(this,menuDoc);
-        menuDoctora.Activar();
+        menuDoctora.estadoBotones();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-       
         AgregarProveedor agregarProveedor = new AgregarProveedor(jButton1, this, menuDoc, this);
         agregarProveedor.setVisible(true);
         JFrame ventanas[] = {menuDoc, this, agregarProveedor};
-        jButton1.setEnabled(false);
-        //jButton1.setDisabledIcon(new ImageIcon(getClass().getResource("/IMG/inventarioSe.png")));
-        //Desactivar(jButton2, jButton3, jButton4);
-        Funciones funciones = new Funciones();
-        funciones.CalcularPosicion(ventanas, 2);
+        abrirVentana(ventanas);
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -235,12 +238,6 @@ public class Proveedores extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        Reportes o = new Reportes();
-        o.setVisible(true);
-    }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyReleased
         // TODO add your handling code here:
@@ -286,7 +283,6 @@ public class Proveedores extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;

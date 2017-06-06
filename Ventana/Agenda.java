@@ -79,6 +79,16 @@ public class Agenda extends javax.swing.JFrame {
         ColorFilas colorFilas = new ColorFilas();
         jTable1.setDefaultRenderer(Object.class, colorFilas);
     }
+    
+    public void abrirVentana(JFrame[] ventanas){
+        Funciones funciones = new Funciones();
+        funciones.cambiarEstadoBotones(jButton1, jButton2, jButton3);
+        funciones.CalcularPosicion(ventanas, 2);
+    }
+    public void estadoBotones(){
+        Funciones funciones = new Funciones();
+        funciones.cambiarEstadoBotones(jButton1, jButton2, jButton3);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -392,19 +402,15 @@ public class Agenda extends javax.swing.JFrame {
         // TODO add your handling code here:
         Funciones funciones = new Funciones();
         funciones.Desaparecer(this,menuDoc);
-        menuDoctora.Activar();
+        menuDoctora.estadoBotones();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        Historial historial = new Historial(jButton2, this, menuDoc, idCliente);
+        Historial historial = new Historial(jButton2, this, menuDoc, idCliente, this, null);
         historial.setVisible(true);
         JFrame ventanas[] = {menuDoc, this, historial};
-        jButton2.setEnabled(false);
-        //jButton1.setDisabledIcon(new ImageIcon(getClass().getResource("/IMG/inventarioSe.png")));
-        //Desactivar(jButton2, jButton3, jButton4);
-        Funciones funciones = new Funciones();
-        funciones.CalcularPosicion(ventanas, 2);
+        abrirVentana(ventanas);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked

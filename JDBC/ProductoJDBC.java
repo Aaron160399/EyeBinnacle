@@ -27,7 +27,7 @@ public class ProductoJDBC {
     static Statement sentencia;
     static ResultSet resultado;
     private static final String TABLE="Producto";
-    private static final String SQL_INSERT="INSERT INTO "+TABLE+" (Marca_idMarca, Proveedores_idProveedores, numeroIdentificacion, caracteristicas, precio, existente) VALUES (?,?,?,?,?,?)";
+    private static final String SQL_INSERT="INSERT INTO "+TABLE+" (Marca_idMarca, Proveedores_idProveedores, numeroIdentificacion, caracteristicas, precio, existente, imagen) VALUES (?,?,?,?,?,?,?)";
     private static final String SQL_QUERY="SELECT * FROM "+TABLE+ " WHERE numeroIdentificacion = ?";
     private static final String SQL_QUERY_ALL = "SELECT * FROM " + TABLE +" WHERE existente = true";
     private static final String SQL_DELETE="UPDATE "+TABLE+" SET existente=? WHERE idProducto=?";
@@ -46,6 +46,7 @@ public class ProductoJDBC {
             st.setString(4, pojo.getCaracteristica());
             st.setDouble(5, pojo.getPrecioventa());
             st.setBoolean(6, pojo.isExistente());
+            st.setString(7, pojo.getImagen());
             id = st.executeUpdate();
             System.out.println(id);
         } catch (Exception e) {
@@ -250,6 +251,7 @@ public class ProductoJDBC {
             pojo.setCaracteristica(rs.getString("Caracteristicas"));
             pojo.setPrecioventa(rs.getDouble("precio"));
             pojo.setExistente(rs.getBoolean("existente"));
+            pojo.setImagen(rs.getString("imagen"));
         } catch (SQLException ex) {
             System.out.println("Error al inflar pojo " + ex);
         }

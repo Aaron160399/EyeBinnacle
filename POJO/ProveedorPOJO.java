@@ -15,6 +15,7 @@ public class ProveedorPOJO {
     private String apellidos;
     private String empresa;
     private String telefono;
+    private boolean activo;
 
     public int getIdProveedores() {
         return idProveedores;
@@ -55,5 +56,15 @@ public class ProveedorPOJO {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
+    
     
 }

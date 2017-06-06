@@ -29,13 +29,13 @@ public class ConsultaJDBC {
     private static final String TABLE="consulta";
     private static final String SQL_INSERT="INSERT INTO "+TABLE+" (Cliente_idCliente, Usuario_idUsuario, fecha, horaInicio, asunto,"
             + " estatus, visita, aseguradora_empresa) VALUES (?,?,?,?,?,?,?,?)";
-    private static final String SQL_QUERY="SELECT * FROM "+TABLE + " WHERE idCoonsulta = ?";
+    private static final String SQL_QUERY="SELECT * FROM "+TABLE + " WHERE idConsulta = ?";
     private static final String SQL_QUERY_CLIENTE="SELECT * FROM "+TABLE + " WHERE Cliente_idCliente = ?";
     private static final String SQL_QUERY_ALL = "SELECT * FROM " + TABLE+ " "
             + "WHERE fecha = '"+anho+"-"+mes+"-"+dia+"'";
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idCita=?";
     private static final String SQL_UPDATE="UPDATE "+TABLE+" SET Cliente_idCliente=?, fecha=?, horaInicio=?, asunto=?, "
-            + "estatus=?, resultado=?, visita=?, aseguradora_empresa=? WHERE idCoonsulta=?";
+            + "estatus=?, resultado=?, visita=?, aseguradora_empresa=? WHERE idConsulta=?";
     
     public static int insertar(ConsultaPOJO pojo) {
         Connection con = null;
@@ -125,7 +125,7 @@ public class ConsultaJDBC {
        try {
            con = Conexion.getConnection();
            //Recuerden que el últmo es el id
-           st = con.prepareStatement("UPDATE "+TABLE+" SET resultado=?, estatus=? WHERE idCoonsulta=?");
+           st = con.prepareStatement("UPDATE "+TABLE+" SET resultado=?, estatus=? WHERE idConsulta=?");
            st.setString(1, pojo.getResultado());
            st.setString(2, pojo.getEstatus());
            st.setInt(3, pojo.getIdCita());
@@ -229,6 +229,38 @@ public class ConsultaJDBC {
         return dt;
     }
     
+    public static DefaultTableModel cargarTablaTodas(java.util.Date fecha) {
+        Connection con = null;
+        PreparedStatement st = null;
+        DefaultTableModel dt = null;
+        String encabezados[] = {"Id","Paciente","Hora"};
+        try {
+            con = Conexion.getConnection();
+            dt = new DefaultTableModel();
+            dt.setColumnIdentifiers(encabezados);
+            java.sql.Date fechaSQL = new java.sql.Date(fecha.getTime());
+            System.out.println(fechaSQL);
+            st = con.prepareStatement("SELECT * FROM "+TABLE+" WHERE fecha = '"+fechaSQL+"'");
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Object ob[] = new Object[3];
+                ConsultaPOJO pojo = inflaPOJO(rs);
+                ClientePOJO pojo2 = ClienteJDBC.consultar(String.valueOf(pojo.getCliente_idCliente()));
+                ob[0] = pojo.getIdCita();
+                ob[1] = pojo2.getNombre()+" "+pojo2.getApellidos();
+                ob[2] = pojo.getHoraInicio();
+                dt.addRow(ob);
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.out.println("Error al cargar la tabla de todas las consultas" + e);
+        } finally {
+            Conexion.close(con);
+            Conexion.close(st);
+        }
+        return dt;
+    }
+    
     public static String cargarExpediente(int id) {
         Connection con = null;
         PreparedStatement st = null;
@@ -317,7 +349,7 @@ public class ConsultaJDBC {
 
        ConsultaPOJO pojo = new ConsultaPOJO();
         try {
-            pojo.setIdCita(rs.getInt("idCoonsulta"));
+            pojo.setIdCita(rs.getInt("idConsulta"));
             pojo.setCliente_idCliente(rs.getInt("Cliente_idCliente"));
             pojo.setUsuario_idUsuario(rs.getInt("Usuario_idUsuario"));
             pojo.setFecha(rs.getDate("fecha"));

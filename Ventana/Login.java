@@ -8,6 +8,8 @@ package Ventana;
 import JDBC.UsuarioJDBC;
 import POJO.UsuarioPOJO;
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.Toolkit;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 
@@ -24,6 +26,9 @@ public class Login extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         setTitle("Login");
+        Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/IMG/Sin título-1.png"));
+       setIconImage(icon);
+setVisible(true);
     }
 
     /**

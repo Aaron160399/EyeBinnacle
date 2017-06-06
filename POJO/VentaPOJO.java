@@ -24,6 +24,9 @@ public class VentaPOJO {
     private String orden;
     private String tipopago;
     private String tipo;
+    private String tipoMica;
+    private double precioMica;
+    private String estado;
 
     public Timestamp getFecha() {
         return fecha;
@@ -111,6 +114,30 @@ public class VentaPOJO {
 
     public void setConsulta_idCita(int Consulta_idCita) {
         this.Consulta_idCita = Consulta_idCita;
+    }
+
+    public String getTipoMica() {
+        return tipoMica;
+    }
+
+    public void setTipoMica(String tipoMica) {
+        this.tipoMica = tipoMica;
+    }
+
+    public double getPrecioMica() {
+        return precioMica;
+    }
+
+    public void setPrecioMica(double precioMica) {
+        this.precioMica = precioMica;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     

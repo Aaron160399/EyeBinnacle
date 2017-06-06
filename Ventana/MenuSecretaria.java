@@ -14,6 +14,7 @@ import POJO.UsuarioPOJO;
 import com.mxrck.autocompleter.AutoCompleterCallback;
 import com.mxrck.autocompleter.TextAutoCompleter;
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,6 +44,9 @@ public class MenuSecretaria extends javax.swing.JFrame {
                 ((Toolkit.getDefaultToolkit().getScreenSize().height)/2)-(this.getSize().height/2));
         cargarTabla();
         setTitle("Menu Secretaria");
+         Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/IMG/Sin título-1.png"));
+       setIconImage(icon);
+setVisible(true);
         nombres = new TextAutoCompleter(nombre, new AutoCompleterCallback() {
             @Override
             public void callback(Object o) {
@@ -64,6 +68,10 @@ public class MenuSecretaria extends javax.swing.JFrame {
         setLocation(((Toolkit.getDefaultToolkit().getScreenSize().width)/2)-(this.getSize().width/2), 
                 ((Toolkit.getDefaultToolkit().getScreenSize().height)/2)-(this.getSize().height/2));
         cargarTabla();
+        setTitle("Menu Secretaria");
+        Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/IMG/Sin título-1.png"));
+        setIconImage(icon);
+        setVisible(true);
         nombres = new TextAutoCompleter(nombre, new AutoCompleterCallback() {
             @Override
             public void callback(Object o) {
@@ -98,6 +106,12 @@ public class MenuSecretaria extends javax.swing.JFrame {
         jButton4.setEnabled(true);
         jTable1.setEnabled(true);
     }
+    public void activar2(){
+        jButton6.setEnabled(true);
+    }
+    public void activar3(){
+        jButton7.setEnabled(true);
+    }
     
     public void insertarCita(int idCliente, boolean subsecuente){
         int idUsuario = usuarioPOJO2.getIdUsuario();
@@ -121,7 +135,7 @@ public class MenuSecretaria extends javax.swing.JFrame {
         } else if (jRadioButton2.isSelected()) {
             visita = "empresa";
         } else if (jRadioButton3.isSelected()){
-            visita = "nunguno";
+            visita = "ninguno";
         }
         
         if (subsecuente == true) {
@@ -205,6 +219,8 @@ public class MenuSecretaria extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
@@ -228,12 +244,12 @@ public class MenuSecretaria extends javax.swing.JFrame {
         jRadioButton3 = new javax.swing.JRadioButton();
         jLabel11 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jButton5 = new javax.swing.JButton();
         jRadioButton4 = new javax.swing.JRadioButton();
         jRadioButton5 = new javax.swing.JRadioButton();
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel2 = new javax.swing.JLabel();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jLabel12 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -287,6 +303,28 @@ public class MenuSecretaria extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(jButton4);
+
+        jButton6.setText("TodasCitas");
+        jButton6.setFocusable(false);
+        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton6);
+
+        jButton7.setText("TodosCobros");
+        jButton7.setFocusable(false);
+        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton7);
 
         getContentPane().add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 686, -1));
 
@@ -418,8 +456,8 @@ public class MenuSecretaria extends javax.swing.JFrame {
                                 .addComponent(jRadioButton3))
                             .addComponent(celular)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -471,10 +509,10 @@ public class MenuSecretaria extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addGap(2, 2, 2))
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel8)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(7, 7, 7)
                         .addComponent(jRadioButton4)
@@ -594,6 +632,26 @@ public class MenuSecretaria extends javax.swing.JFrame {
         jTextField2.setEditable(false);
     }//GEN-LAST:event_jRadioButton3ActionPerformed
 
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        TodasLasCitas todasLasCitas = new TodasLasCitas(this, jButton2, this);
+        todasLasCitas.setVisible(true);
+        JFrame ventanas[] = {this, todasLasCitas};
+        jButton6.setEnabled(false);
+        Funciones funciones = new Funciones();
+        funciones.CalcularPosicion(ventanas, 1);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        TodasLosCobros todosLosCobros = new TodasLosCobros(this, jButton2, this);
+        todosLosCobros.setVisible(true);
+        JFrame ventanas[] = {this, todosLosCobros};
+        jButton7.setEnabled(false);
+        Funciones funciones = new Funciones();
+        funciones.CalcularPosicion(ventanas, 1);
+    }//GEN-LAST:event_jButton7ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -639,6 +697,8 @@ public class MenuSecretaria extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JCheckBox jCheckBox1;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel10;

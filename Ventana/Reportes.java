@@ -6,10 +6,15 @@
 package Ventana;
 
 import JDBC.VentaJDBC;
+import com.itextpdf.text.DocumentException;
 import java.awt.Color;
 import java.awt.Toolkit;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
@@ -30,6 +35,7 @@ public class Reportes extends javax.swing.JFrame {
         getContentPane().setBackground(Color.WHITE);
         jToolBar1.setFloatable(false);
         setLocationRelativeTo(null);
+        setTitle("Reportes");
     }
     
     public Reportes(JFrame menu, JButton boton, MenuSecretaria menuSecretaria2) {
@@ -37,6 +43,7 @@ public class Reportes extends javax.swing.JFrame {
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         setOpacity(0);
         initComponents();
+        setTitle("Reportes");
         getContentPane().setBackground(Color.WHITE);
         setLocation(((Toolkit.getDefaultToolkit().getScreenSize().width)/2)-(this.getSize().width/2), 
                 ((Toolkit.getDefaultToolkit().getScreenSize().height)/2)-(this.getSize().height/2));
@@ -83,7 +90,7 @@ public class Reportes extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(445, 600));
+        setMinimumSize(new java.awt.Dimension(500, 630));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -169,6 +176,11 @@ public class Reportes extends javax.swing.JFrame {
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(jButton2);
 
         getContentPane().add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 500, 40));
@@ -211,6 +223,20 @@ public class Reportes extends javax.swing.JFrame {
         double montoTotal = tcrecibo[1]+tsrecibo[1]+ecrecibo[1];
         jTextField7.setText(decimalFormat.format(montoTotal)+"");
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        Funciones funciones = new Funciones();
+        try {
+            funciones.generarPDF(jDateChooser1.getDate(), jDateChooser2.getDate());
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Reportes.class.getName()).log(Level.SEVERE, ""+ex, ex);
+        } catch (DocumentException ex) {
+            Logger.getLogger(Reportes.class.getName()).log(Level.SEVERE, ""+ex, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Reportes.class.getName()).log(Level.SEVERE, ""+ex, ex);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

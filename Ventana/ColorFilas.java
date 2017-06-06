@@ -26,22 +26,38 @@ public class ColorFilas extends DefaultTableCellRenderer{
     @Override
     public Component getTableCellRendererComponent(JTable jtable, Object o, boolean bln, boolean bln1, int i, int i1) {
         String id = jtable.getValueAt(i, 0).toString();
-        consultaPojo = ConsultaJDBC.consultar(id);
-        boolean haCobrado = VentaJDBC.seHaCobrado(consultaPojo.getIdCita());
-        if (haCobrado) {
-            setBackground(Color.cyan);
-        } else if (consultaPojo.getEstatus().equalsIgnoreCase("sin comenzar")) {
-            setBackground(Color.WHITE);
-        } else if (consultaPojo.getEstatus().equalsIgnoreCase("por comenzar")) {
-            setBackground(Color.BLUE);
-        } else if (consultaPojo.getEstatus().equalsIgnoreCase("cancelada")) {
-            setBackground(Color.RED);
-        } else if (consultaPojo.getEstatus().equalsIgnoreCase("en curso")) {
-            setBackground(Color.GREEN);
-        } else if (consultaPojo.getEstatus().equalsIgnoreCase("finalizada")) {
-            setBackground(Color.YELLOW);
-        } 
         
+        try {
+            consultaPojo = ConsultaJDBC.consultar(id);
+            boolean haCobrado = VentaJDBC.seHaCobrado(consultaPojo.getIdCita());
+            if (haCobrado == true) {
+                setBackground(Color.CYAN);
+            } else if (consultaPojo.getEstatus().equalsIgnoreCase("sin comenzar")) {
+                setBackground(Color.WHITE);
+            } else if (consultaPojo.getEstatus().equalsIgnoreCase("cancelada")) {
+                setBackground(Color.RED);
+            } else if (consultaPojo.getEstatus().equalsIgnoreCase("finalizada")) {
+                setBackground(Color.YELLOW);
+            }
+        } catch (Exception e) {
+            System.out.println("No es una cita");
+        }
+        
+        
+        try {
+            ventaPojo = VentaJDBC.consultar(id);
+            System.out.println(id);
+            if (ventaPojo.getEstado().equalsIgnoreCase("Anticipo")) {
+                setBackground(Color.LIGHT_GRAY);
+            } else if (ventaPojo.getEstado().equalsIgnoreCase("Pagado")) {
+                setBackground(Color.GRAY);
+            } else if (ventaPojo.getEstado().equalsIgnoreCase("Pagado y entregado")) {
+                setBackground(Color.MAGENTA);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("No existe esa venta");
+        }
         
         return super.getTableCellRendererComponent(jtable, o, bln, bln1, i, i1); //To change body of generated methods, choose Tools | Templates.
     }
