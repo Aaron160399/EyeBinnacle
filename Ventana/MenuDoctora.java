@@ -165,11 +165,9 @@ public class MenuDoctora extends javax.swing.JFrame {
         });
         jToolBar1.add(jButton6);
 
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/configuracion.png"))); // NOI18N
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/19047503_1509339219139680_1237006338_n.png"))); // NOI18N
         jButton5.setBorderPainted(false);
         jButton5.setContentAreaFilled(false);
-        jButton5.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/configuracionHo.png"))); // NOI18N
-        jButton5.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/configuracionSe.png"))); // NOI18N
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
@@ -271,6 +269,10 @@ public class MenuDoctora extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
+        Usuario usuario = new Usuario(this, this);
+        usuario.setVisible(true);
+        JFrame ventanas[] = {this, usuario};
+        abrirVentana(ventanas);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     /**

@@ -14,6 +14,7 @@ import POJO.ProductoPOJO;
 import POJO.ProveedorPOJO;
 import java.awt.Color;
 import java.awt.Image;
+import java.io.File;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -73,13 +74,13 @@ public class Productos extends javax.swing.JFrame {
    
     public void abrirVentana(JFrame[] ventanas){
         Funciones funciones = new Funciones();
-        funciones.cambiarEstadoBotones(jButton1, jButton2, jButton3, jButton4);
+        funciones.cambiarEstadoBotones(jButton1, jButton4);
         funciones.CalcularPosicion(ventanas, 2);
     } 
     
     public void estadoBotones(){
         Funciones funciones = new Funciones();
-        funciones.cambiarEstadoBotones(jButton1, jButton2, jButton3, jButton4);
+        funciones.cambiarEstadoBotones(jButton1, jButton4);
     }
 
     /**
@@ -96,8 +97,6 @@ public class Productos extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         foto = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -111,8 +110,6 @@ public class Productos extends javax.swing.JFrame {
         jTextField3 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jTextField4 = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -127,7 +124,7 @@ public class Productos extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTree1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 205, 175, 445));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 175, 490));
 
         jToolBar1.setRollover(true);
 
@@ -152,18 +149,6 @@ public class Productos extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(jButton1);
-
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/eliminar.png"))); // NOI18N
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton3);
-
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/reportes.png"))); // NOI18N
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton2);
 
         getContentPane().add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 450, -1));
 
@@ -248,12 +233,6 @@ public class Productos extends javax.swing.JFrame {
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 160, -1, 510));
-
-        jLabel1.setText("Filtrar por");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, -1, -1));
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 167, 100, -1));
 
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/fondoInventario.png"))); // NOI18N
         getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 450, 620));
@@ -340,11 +319,7 @@ public class Productos extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel foto;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -132,7 +132,9 @@ public class Cliente extends javax.swing.JFrame {
         jTextField2.setEditable(false);
         getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 230, 160, -1));
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/palomita.png"))); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/historial64.png"))); // NOI18N
+        jButton1.setBorderPainted(false);
+        jButton1.setContentAreaFilled(false);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);

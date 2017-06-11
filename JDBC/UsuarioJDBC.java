@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class UsuarioJDBC {
     private static final String TABLE="Usuario";
-    private static final String SQL_INSERT="INSERT INTO "+TABLE+" (nombre) VALUES (?)";
+    private static final String SQL_INSERT="INSERT INTO "+TABLE+" (nombre, contrasena, categoria) VALUES (?,?,?)";
     private static final String SQL_QUERY="SELECT * FROM "+TABLE+" WHERE idUsuario = ?";
     private static final String SQL_QUERY_ALL = "Select * from " + TABLE;
     private static final String SQL_DELETE="DELETE FROM "+TABLE+" WHERE idMarca=?";
@@ -33,10 +33,9 @@ public static int insertar(UsuarioPOJO pojo) {
             con = Conexion.getConnection();
             st = con.prepareStatement(SQL_INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
             st.setString(1, pojo.getNombre());
-            st.executeUpdate();
-            while (rs.next()) {                
-                id = rs.getInt(1);
-            }
+            st.setString(2, pojo.getContrasena());
+            st.setString(3, pojo.getCategoria());       
+            id = st.executeUpdate();
         } catch (Exception e) {
             System.out.println("Error al insertar " + e);
         } finally {
@@ -96,7 +95,7 @@ public static int insertar(UsuarioPOJO pojo) {
         Connection con = null;
         PreparedStatement st = null;
         DefaultTableModel dt = null;
-        String encabezados[] = {"Id","Nombre"};
+        String encabezados[] = {"Nombre", "Contraseña", "Categoría"};
         try {
             con = Conexion.getConnection();
             st = con.prepareStatement(SQL_QUERY_ALL);
@@ -106,9 +105,9 @@ public static int insertar(UsuarioPOJO pojo) {
             while (rs.next()) {
                 Object ob[] = new Object[3];
                 UsuarioPOJO pojo = inflaPOJO(rs);
-                ob[0] = pojo.getIdUsuario();
-                ob[1] = pojo.getNombre();
-                ob[2] = pojo.getContrasena();
+                ob[0] = pojo.getNombre();
+                ob[1] = pojo.getContrasena();
+                ob[2] = pojo.getCategoria();
                 dt.addRow(ob);
             }
             rs.close();
@@ -166,6 +165,7 @@ public static int insertar(UsuarioPOJO pojo) {
             pojo.setIdUsuario(rs.getInt("idUsuario"));
             pojo.setNombre(rs.getString("nombre"));
             pojo.setContrasena(rs.getString("contrasena"));
+            pojo.setCategoria(rs.getString("categoria"));
         } catch (SQLException ex) {
             System.out.println("Error al inflar pojo " + ex);
         }

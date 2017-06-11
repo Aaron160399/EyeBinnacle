@@ -13,6 +13,7 @@ public class UsuarioPOJO {
     private int idUsuario;
     private String nombre;
     private String contrasena; 
+    private String categoria; 
 
     public int getIdUsuario() {
         return idUsuario;
@@ -36,6 +37,14 @@ public class UsuarioPOJO {
 
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
     

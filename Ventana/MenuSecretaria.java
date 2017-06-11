@@ -21,8 +21,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.table.TableColumnModel;
 
 /**
@@ -87,6 +91,12 @@ setVisible(true);
         ClienteJDBC.cargarCompleter(nombres);
         usuarioPOJO2 = usuarioPOJO;
         jTextField2.setEditable(false);
+        SpinnerModel horas = new SpinnerNumberModel(12, 1, 12, 1);
+        SpinnerModel minutos = new SpinnerNumberModel(00, 0, 60, 1);
+        jSHora.setModel(horas);
+        jSHora.setEditor(new JSpinner.NumberEditor(jSHora, "00"));
+        jSSegundo.setModel(minutos);
+        jSSegundo.setEditor(new JSpinner.NumberEditor(jSSegundo, "00"));
     }
     
     public void cargarTabla(){
@@ -102,17 +112,6 @@ setVisible(true);
         jTable1.setDefaultRenderer(Object.class, colorFilas);
     }
     
-    public void activar(){
-        jButton4.setEnabled(true);
-        jTable1.setEnabled(true);
-    }
-    public void activar2(){
-        jButton6.setEnabled(true);
-    }
-    public void activar3(){
-        jButton7.setEnabled(true);
-    }
-    
     public void insertarCita(int idCliente, boolean subsecuente){
         int idUsuario = usuarioPOJO2.getIdUsuario();
         Date fecha = jDateChooser1.getDate();
@@ -121,9 +120,9 @@ setVisible(true);
         try {
             java.util.Date hora = null;
             if (jRadioButton4.isSelected()) {
-                hora = (java.util.Date)simpleDateFormat.parse(jTextField1.getText()+" am");
+                hora = (java.util.Date)simpleDateFormat.parse(jSHora.getValue()+":"+jSSegundo.getValue()+" am");
             } else if (jRadioButton5.isSelected()) {
-                hora = (java.util.Date)simpleDateFormat.parse(jTextField1.getText()+" pm");
+                hora = (java.util.Date)simpleDateFormat.parse(jSHora.getValue()+":"+jSSegundo.getValue()+" pm");
             }
             horaInicio = new java.sql.Time(hora.getTime());
         } catch (ParseException ex) {
@@ -174,7 +173,8 @@ setVisible(true);
             jDateChooser1.setDate(null);
             jRadioButton3.setSelected(true);
             jTextArea1.setText(null);
-            jTextField1.setText(null);
+            jSHora.setValue(12);
+            jSSegundo.setValue(00);
             jTextField2.setText(null);
         } else {
             JOptionPane.showMessageDialog(null, "CATASTROPHIC ERROR");
@@ -201,6 +201,20 @@ setVisible(true);
         } else {
             JOptionPane.showMessageDialog(null, "Error al ingresar cliente");
         }
+    }
+    
+    public void abrirVentana(JFrame[] ventanas, Object... objetos){
+        if (!jButton4.isEnabled()) {
+            jButton4.setEnabled(true);
+        }
+        Funciones funciones = new Funciones();
+        funciones.cambiarEstadoBotones(objetos);
+        funciones.CalcularPosicion(ventanas, 1);
+    }
+    
+    public void estadoBotones(){
+        Funciones funciones = new Funciones();
+        funciones.cambiarEstadoBotones(jButton1, jButton2, jButton3, jButton4, jButton6, jButton7, jTable1);
     }
 
     /**
@@ -229,13 +243,11 @@ setVisible(true);
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         nombre = new javax.swing.JTextField();
         apellido = new javax.swing.JTextField();
         telefono = new javax.swing.JTextField();
         celular = new javax.swing.JTextField();
-        jTextField1 = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabel10 = new javax.swing.JLabel();
@@ -248,13 +260,15 @@ setVisible(true);
         jRadioButton4 = new javax.swing.JRadioButton();
         jRadioButton5 = new javax.swing.JRadioButton();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jLabel2 = new javax.swing.JLabel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        jSHora = new javax.swing.JSpinner();
+        jSSegundo = new javax.swing.JSpinner();
         jLabel12 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
-        setMinimumSize(new java.awt.Dimension(702, 640));
+        setMaximumSize(new java.awt.Dimension(690, 600));
+        setMinimumSize(new java.awt.Dimension(690, 600));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jToolBar1.setRollover(true);
@@ -304,7 +318,7 @@ setVisible(true);
         });
         jToolBar1.add(jButton4);
 
-        jButton6.setText("TodasCitas");
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/calendario.png"))); // NOI18N
         jButton6.setFocusable(false);
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -315,7 +329,7 @@ setVisible(true);
         });
         jToolBar1.add(jButton6);
 
-        jButton7.setText("TodosCobros");
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/pagos.png"))); // NOI18N
         jButton7.setFocusable(false);
         jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -364,9 +378,6 @@ setVisible(true);
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel7.setText("Fecha");
-
-        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel8.setText("Hora");
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel9.setText("Asunto");
@@ -422,8 +433,6 @@ setVisible(true);
 
         jCheckBox1.setText("Primera visita");
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/info.png"))); // NOI18N
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -459,10 +468,10 @@ setVisible(true);
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel8)
+                                .addComponent(jSHora, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jSSegundo, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jRadioButton4)
                                     .addComponent(jRadioButton5)))))
@@ -473,10 +482,8 @@ setVisible(true);
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel2)
-                                .addGap(6, 6, 6)
+                                .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jCheckBox1))
                             .addComponent(apellido)))))
         );
@@ -485,12 +492,14 @@ setVisible(true);
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBox1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel3)
-                        .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(20, 20, 20))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jCheckBox1)
+                        .addGap(18, 18, 18)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(apellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -509,10 +518,10 @@ setVisible(true);
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addGap(2, 2, 2))
+                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel8)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jSHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jSSegundo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(7, 7, 7)
                         .addComponent(jRadioButton4)
@@ -559,20 +568,15 @@ setVisible(true);
         System.out.println(seleccion);
         if (seleccion >= 0) {
             String id = jTable1.getValueAt(seleccion, 0).toString();
-            System.out.println(id);
             Ventas ventas = new Ventas(this, jButton2, this, id, usuarioPOJO2);
             ventas.setVisible(true);
             JFrame ventanas[] = {this, ventas};
-            jButton4.setEnabled(false);
-            Funciones funciones = new Funciones();
-            funciones.CalcularPosicion(ventanas, 1);
+            abrirVentana(ventanas, jButton1, jButton2, jButton3, jButton4, jButton6, jButton7);
         } else {
             Ventas ventas = new Ventas(this, jButton2, this, usuarioPOJO2);
             ventas.setVisible(true);
             JFrame ventanas[] = {this, ventas};
-            jButton4.setEnabled(false);
-            Funciones funciones = new Funciones();
-            funciones.CalcularPosicion(ventanas, 1);
+            abrirVentana(ventanas, jButton1, jButton2, jButton3, jButton4, jButton6, jButton7);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -581,9 +585,7 @@ setVisible(true);
         Reportes reportes = new Reportes(this, jButton2, this);
         reportes.setVisible(true);
         JFrame ventanas[] = {this, reportes};
-        jButton4.setEnabled(false);
-        Funciones funciones = new Funciones();
-        funciones.CalcularPosicion(ventanas, 1);
+        abrirVentana(ventanas, jButton1, jButton2, jButton3, jButton4, jButton6, jButton7);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
@@ -602,10 +604,7 @@ setVisible(true);
         VerCita verCita = new VerCita(this, jButton2, this, id);
         verCita.setVisible(true);
         JFrame ventanas[] = {this, verCita};
-        jButton4.setEnabled(false);
-        Funciones funciones = new Funciones();
-        funciones.CalcularPosicion(ventanas, 1);
-        jTable1.setEnabled(false);
+        abrirVentana(ventanas, jButton1, jButton2, jButton3, jButton4, jButton6, jButton7, jTable1);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
@@ -637,9 +636,7 @@ setVisible(true);
         TodasLasCitas todasLasCitas = new TodasLasCitas(this, jButton2, this);
         todasLasCitas.setVisible(true);
         JFrame ventanas[] = {this, todasLasCitas};
-        jButton6.setEnabled(false);
-        Funciones funciones = new Funciones();
-        funciones.CalcularPosicion(ventanas, 1);
+        abrirVentana(ventanas, jButton1, jButton2, jButton3, jButton4, jButton6, jButton7);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
@@ -647,9 +644,7 @@ setVisible(true);
         TodasLosCobros todosLosCobros = new TodasLosCobros(this, jButton2, this);
         todosLosCobros.setVisible(true);
         JFrame ventanas[] = {this, todosLosCobros};
-        jButton7.setEnabled(false);
-        Funciones funciones = new Funciones();
-        funciones.CalcularPosicion(ventanas, 1);
+        abrirVentana(ventanas, jButton1, jButton2, jButton3, jButton4, jButton6, jButton7);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     /**
@@ -704,13 +699,11 @@ setVisible(true);
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton jRadioButton1;
@@ -718,11 +711,12 @@ setVisible(true);
     private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JRadioButton jRadioButton4;
     private javax.swing.JRadioButton jRadioButton5;
+    private javax.swing.JSpinner jSHora;
+    private javax.swing.JSpinner jSSegundo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTextField nombre;

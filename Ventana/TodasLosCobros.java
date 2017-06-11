@@ -622,10 +622,10 @@ public class TodasLosCobros extends javax.swing.JFrame {
         });
         jToolBar1.add(jButton1);
 
-        getContentPane().add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 376, -1));
+        getContentPane().add(jToolBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 630, -1));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/fondoVerCita.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, -1, -1));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/fondoTodosCobros.png"))); // NOI18N
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 630, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -634,7 +634,7 @@ public class TodasLosCobros extends javax.swing.JFrame {
         // TODO add your handling code here:
         Funciones funciones = new Funciones();
         funciones.Desaparecer(this,menuSecre);
-        menuSecretaria.activar3();
+        menuSecretaria.estadoBotones();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTable1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseExited

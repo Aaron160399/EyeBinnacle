@@ -105,7 +105,7 @@ setVisible(true);
         usuarioPOJO = UsuarioJDBC.consultar(String.valueOf(usuarioJDBC));
         if (usuarioJDBC != 0) {
             JOptionPane.showMessageDialog(null, "Bienvenido\nHa ingresado satisfactoriamente al sistema "+user);
-            if (usuarioJDBC == 1) {
+            if (usuarioPOJO.getCategoria().equalsIgnoreCase("Primario")) {
                 MenuDoctora menuDoctora = new MenuDoctora();
                 menuDoctora.setVisible(true);
             } else {

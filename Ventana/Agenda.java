@@ -379,7 +379,7 @@ public class Agenda extends javax.swing.JFrame {
         });
         jToolBar1.add(jButton1);
 
-        jButton2.setText("VerTodo");
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/historial.png"))); // NOI18N
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

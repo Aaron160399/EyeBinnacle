@@ -129,13 +129,15 @@ public class Reportes extends javax.swing.JFrame {
         });
         getContentPane().add(jDateChooser2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 180, 120, -1));
 
-        jButton3.setText("Calcular");
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/calcular.png"))); // NOI18N
+        jButton3.setBorderPainted(false);
+        jButton3.setContentAreaFilled(false);
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 180, -1, -1));
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 170, 40, 50));
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         jLabel8.setText("Total");
@@ -172,7 +174,7 @@ public class Reportes extends javax.swing.JFrame {
         });
         jToolBar1.add(jButton1);
 
-        jButton2.setText("Imprimir");
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/IMG/imprimir.png"))); // NOI18N
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -200,6 +202,7 @@ public class Reportes extends javax.swing.JFrame {
         // TODO add your handling code here:
         Funciones funciones = new Funciones();
         funciones.Desaparecer(this,menuSecre);
+        menuSecretaria.estadoBotones();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jDateChooser2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jDateChooser2MouseReleased
