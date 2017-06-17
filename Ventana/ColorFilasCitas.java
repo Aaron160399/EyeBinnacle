@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableCellRenderer;
  *
  * @author aaron
  */
-public class ColorFilas extends DefaultTableCellRenderer{
+public class ColorFilasCitas extends DefaultTableCellRenderer{
     int nFilas;
     VentaPOJO ventaPojo;
     ConsultaPOJO consultaPojo;
@@ -41,22 +41,6 @@ public class ColorFilas extends DefaultTableCellRenderer{
             }
         } catch (Exception e) {
             System.out.println("No es una cita");
-        }
-        
-        
-        try {
-            ventaPojo = VentaJDBC.consultar(id);
-            System.out.println(id);
-            if (ventaPojo.getEstado().equalsIgnoreCase("Anticipo")) {
-                setBackground(Color.LIGHT_GRAY);
-            } else if (ventaPojo.getEstado().equalsIgnoreCase("Pagado")) {
-                setBackground(Color.GRAY);
-            } else if (ventaPojo.getEstado().equalsIgnoreCase("Pagado y entregado")) {
-                setBackground(Color.MAGENTA);
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-            System.out.println("No existe esa venta");
         }
         
         return super.getTableCellRendererComponent(jtable, o, bln, bln1, i, i1); //To change body of generated methods, choose Tools | Templates.

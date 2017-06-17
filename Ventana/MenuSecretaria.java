@@ -16,6 +16,8 @@ import com.mxrck.autocompleter.TextAutoCompleter;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.Timer;
 import javax.swing.table.TableColumnModel;
 
 /**
@@ -38,6 +41,8 @@ public class MenuSecretaria extends javax.swing.JFrame {
     ClientePOJO clientePOJO;
     UsuarioPOJO usuarioPOJO2;
     int seleccion;
+    private ActionListener al;
+    private Timer t;
     /**
      * Creates new form MenuSecretaria
      */
@@ -97,6 +102,7 @@ setVisible(true);
         jSHora.setEditor(new JSpinner.NumberEditor(jSHora, "00"));
         jSSegundo.setModel(minutos);
         jSSegundo.setEditor(new JSpinner.NumberEditor(jSSegundo, "00"));
+        recargarTabla();
     }
     
     public void cargarTabla(){
@@ -108,7 +114,7 @@ setVisible(true);
     }
     
     public void colorearTabla(){
-        ColorFilas colorFilas = new ColorFilas();
+        ColorFilasCitas colorFilas = new ColorFilasCitas();
         jTable1.setDefaultRenderer(Object.class, colorFilas);
     }
     
@@ -216,7 +222,22 @@ setVisible(true);
         Funciones funciones = new Funciones();
         funciones.cambiarEstadoBotones(jButton1, jButton2, jButton3, jButton4, jButton6, jButton7, jTable1);
     }
-
+    
+    public void recargarTabla(){
+        al =new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (true) {
+                    cargarTabla();
+                    System.out.println("Recarga");
+                } else{
+                    t.stop();
+                }
+            }
+        };
+        t=new Timer(15000, al);
+        t.start();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

@@ -154,7 +154,7 @@ public class Productos extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        foto.setText("Label1");
+        foto.setText("Imagen");
 
         jLabel2.setText("No. de identificación");
 

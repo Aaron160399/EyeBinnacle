@@ -173,6 +173,7 @@ public class Ventas extends javax.swing.JFrame {
         if (x != 0) {
             JOptionPane.showMessageDialog(null, "Venta finalizada\nGracias por su compra");
             cerrarVentas();
+            menuSecretaria.estadoBotones();
         } else {
             JOptionPane.showMessageDialog(null, "CATASTROPHIC ERROR");
         }
@@ -231,6 +232,7 @@ public class Ventas extends javax.swing.JFrame {
         if (idVenta != 0) {
             JOptionPane.showMessageDialog(null, "Venta finalizada\nGracias por su compra");
             cerrarVentas();
+            menuSecretaria.estadoBotones();
         } else {
             JOptionPane.showMessageDialog(null, "CATASTROPHIC ERROR");
         }

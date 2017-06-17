@@ -11,11 +11,14 @@ import POJO.ClientePOJO;
 import POJO.ConsultaPOJO;
 import com.sun.awt.AWTUtilities;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
+import javax.swing.Timer;
 import javax.swing.table.TableColumnModel;
 
 /**
@@ -27,6 +30,8 @@ public class Agenda extends javax.swing.JFrame {
     JButton botonPres;
     MenuDoctora menuDoctora;
     int idCliente;
+    private ActionListener al;
+    private Timer t;
     /**
      * Creates new form Agenda
      */
@@ -49,6 +54,7 @@ public class Agenda extends javax.swing.JFrame {
         menuDoctora = menuDoctora2;
         cargarTabla();
         setTitle("Agenda");
+        recargarTabla();
     }
     
     public void cargaInformacion(String id){
@@ -67,6 +73,21 @@ public class Agenda extends javax.swing.JFrame {
         
     }
     
+    public void recargarTabla(){
+        al =new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (true) {
+                    cargarTabla();
+                } else{
+                    t.stop();
+                }
+            }
+        };
+        t=new Timer(15000, al);
+        t.start();
+    }
+    
     public void cargarTabla(){
         jTable1.setModel(ConsultaJDBC.cargarTabla());
         TableColumnModel tableColumnModel = jTable1.getColumnModel();
@@ -76,7 +97,7 @@ public class Agenda extends javax.swing.JFrame {
     }
     
     public void colorearTabla(){
-        ColorFilas colorFilas = new ColorFilas();
+        ColorFilasCitas colorFilas = new ColorFilasCitas();
         jTable1.setDefaultRenderer(Object.class, colorFilas);
     }
     

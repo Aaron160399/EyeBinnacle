@@ -78,7 +78,7 @@ public class TodasLosCobros extends javax.swing.JFrame {
         pintarTabla();
     }
     public void pintarTabla(){
-        ColorFilas colorFilas = new ColorFilas();
+        ColorFilasPagos colorFilas = new ColorFilasPagos();
         jTable1.setDefaultRenderer(Object.class, colorFilas);
     }
     public java.util.Date obtenerFechaHoy(){
