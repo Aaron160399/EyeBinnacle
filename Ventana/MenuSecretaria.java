@@ -221,6 +221,7 @@ setVisible(true);
     public void estadoBotones(){
         Funciones funciones = new Funciones();
         funciones.cambiarEstadoBotones(jButton1, jButton2, jButton3, jButton4, jButton6, jButton7, jTable1);
+        seleccion = 0;
     }
     
     public void recargarTabla(){
@@ -229,7 +230,6 @@ setVisible(true);
             public void actionPerformed(ActionEvent e) {
                 if (true) {
                     cargarTabla();
-                    System.out.println("Recarga");
                 } else{
                     t.stop();
                 }
@@ -585,19 +585,17 @@ setVisible(true);
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        seleccion = jTable1.getSelectedRow();
-        System.out.println(seleccion);
         if (seleccion >= 0) {
             String id = jTable1.getValueAt(seleccion, 0).toString();
             Ventas ventas = new Ventas(this, jButton2, this, id, usuarioPOJO2);
             ventas.setVisible(true);
             JFrame ventanas[] = {this, ventas};
-            abrirVentana(ventanas, jButton1, jButton2, jButton3, jButton4, jButton6, jButton7);
+            abrirVentana(ventanas, jButton1, jButton2, jButton3, jButton4, jButton6, jButton7, jTable1);
         } else {
             Ventas ventas = new Ventas(this, jButton2, this, usuarioPOJO2);
             ventas.setVisible(true);
             JFrame ventanas[] = {this, ventas};
-            abrirVentana(ventanas, jButton1, jButton2, jButton3, jButton4, jButton6, jButton7);
+            abrirVentana(ventanas, jButton1, jButton2, jButton3, jButton4, jButton6, jButton7, jTable1);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -612,6 +610,7 @@ setVisible(true);
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
         seleccion = jTable1.getSelectedRow();
+        System.out.println(seleccion);
         if(jTable1.getSelectedRow() != -1 && jTable1.isEnabled()==true){
             jButton4.setEnabled(true);
         } else {

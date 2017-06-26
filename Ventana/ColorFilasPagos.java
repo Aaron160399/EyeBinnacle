@@ -29,17 +29,15 @@ public class ColorFilasPagos extends DefaultTableCellRenderer{
         
         try {
             ventaPojo = VentaJDBC.consultar(id);
-            System.out.println(id);
             if (ventaPojo.getEstado().equalsIgnoreCase("Anticipo")) {
                 setBackground(Color.LIGHT_GRAY);
             } else if (ventaPojo.getEstado().equalsIgnoreCase("Pagado")) {
-                setBackground(Color.GRAY);
+                setBackground(new Color(121, 255, 130));
             } else if (ventaPojo.getEstado().equalsIgnoreCase("Pagado y entregado")) {
                 setBackground(Color.MAGENTA);
             }
         } catch (Exception e) {
             System.out.println(e);
-            System.out.println("No existe esa venta");
         }
         
         return super.getTableCellRendererComponent(jtable, o, bln, bln1, i, i1); //To change body of generated methods, choose Tools | Templates.

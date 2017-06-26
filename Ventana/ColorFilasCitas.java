@@ -37,10 +37,10 @@ public class ColorFilasCitas extends DefaultTableCellRenderer{
             } else if (consultaPojo.getEstatus().equalsIgnoreCase("cancelada")) {
                 setBackground(Color.RED);
             } else if (consultaPojo.getEstatus().equalsIgnoreCase("finalizada")) {
-                setBackground(Color.YELLOW);
+                setBackground(Color.GREEN);
             }
         } catch (Exception e) {
-            System.out.println("No es una cita");
+            
         }
         
         return super.getTableCellRendererComponent(jtable, o, bln, bln1, i, i1); //To change body of generated methods, choose Tools | Templates.
